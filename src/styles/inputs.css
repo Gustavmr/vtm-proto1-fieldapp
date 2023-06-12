@@ -1,0 +1,28 @@
+/* .text-bubble {
+    display: flex;
+    padding: 4px 10px;
+    border-radius: 10px;
+    width: auto;
+    background-color: var(--col-bg-strong);
+    gap: 5px
+}
+.text-bubble-small {
+    display: flex;
+    padding: 0px 3px;
+    border-radius: 3px;
+    width: auto;
+    background-color: var(--col-bg-strong);
+    gap: 5px;
+    font-size: var(--fnt-sml-text);
+}
+
+.text-bubble.dark {background-color: var(--col-bg-strong-dark);}
+.text-bubble.green {background-color: var(--col-hl-green-dark);}
+.text-bubble.blue {background-color: var(--col-hl-blue-dark);}
+.text-bubble.orange {background-color: var(--col-hl-orange-dark);}
+.text-bubble.coral {background-color: var(--col-hl-coral-dark);} */
+
+input.has-hover:hover {background-color: var(--col-bg-strong-dark); color: var(--col-font-main)}
+input {
+    box-sizing: border-box;
+}

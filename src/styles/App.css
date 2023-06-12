@@ -1,0 +1,171 @@
+/* ESRI default & overrides */
+@import 'https://js.arcgis.com/4.23/esri/themes/light/main.css';
+.esri-ui-corner .esri-component {box-shadow: unset;}
+.esri-ui-corner .esri-component {box-shadow: none;}
+.esri-component.esri-popup {
+    border-radius: 10px;
+}
+.esri-popup--shadow {
+    box-shadow: 0px 8px 17px 3px var(--col-bg-strong-op60)
+}
+
+/* #region Base Styles */
+:root {
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+    /* Basic colors */
+    --col-font-main: #212427;
+    --col-font-contrast: white;
+    --col-box-background: white;
+    --col-white-op40: #ffffff66;
+    --col-white-op60: #ffffff99;
+    --col-black-op40: #00000066;
+    --col-black-op60: #00000099;
+    
+    /* Background colors */
+    --col-bg-light: #eef1fa;
+    --col-bg-alert: rgb(247, 192, 217); 
+    --col-bg-strong: #D0D8F1;
+    --col-bg-strong-dark: #98a5cb; /* 152, 165, 203, 1 */
+    --col-bg-strong-op40: #d0d8f166;
+    --col-bg-strong-op60: #D0D8F199;
+    --col-bg-strong-op80: #D0D8F1CC;
+    --col-bg-transparent: #eef1fa00;
+
+    /* Theme Colors */
+    --col-hl-blue: #4BB7DD; /* 75, 183, 221 */
+    --col-hl-blue-dark: #2e83a1;
+    --col-hl-blue-op40: #4BB7DD66;
+    --col-hl-blue-op60: #4BB7DD99;
+    --col-hl-blue-op80: #4BB7DDCC;
+
+    --col-hl-coral: #FF6F75;
+    --col-hl-coral-dark: #c24549;
+    --col-hl-coral-op40: #FF6F7566;
+    --col-hl-coral-op60: #FF6F7599;
+    --col-hl-coral-op80: #FF6F75CC;
+    
+    --col-hl-green: #46C2A6; /* 70, 194, 166, 1 */
+    --col-hl-green-dark: #2a8d76;
+    --col-hl-green-op40: #46C2A666;
+    --col-hl-green-op60: #46C2A699;
+    --col-hl-green-op80: #46C2A6CC;
+ 
+    --col-hl-orange: #FF875D; /* 255, 135, 93, 1 */
+    --col-hl-orange-bright: #FF9B42;
+    --col-hl-orange-dark: #e36b3f;
+    --col-hl-orange-op40: #FF875D66;
+    --col-hl-orange-op60: #FF875D99;
+    --col-hl-orange-op80: #FF875DCC;
+
+    --col-hl-gray: #B3B3B3;
+    --col-hl-gray-bright: #D9D9D9;
+    --col-hl-gray-dark: #595959;
+
+    --col-alert-pink: #fe288cff;
+
+    /*font sizes */
+    --fnt-std-title: 14px;
+    --fnt-sub-title: 12px;
+    --fnt-std-text: 10px;
+    --fnt-mid-text: 9px;
+    --fnt-sml-text: 8px;
+    --fnt-lrg-title: 18px; 
+    
+    /*Std sizing*/
+    --std-padding: 5px;
+    --std-padding-small: 3px;
+    --std-padding-large: 10px;
+    --radius: 5px;
+    --radius-small: 3px;
+    --radius-large: 3px;
+    --bottom-height: 150px;
+    font-size: 10px;
+}
+
+.App-container {
+  padding: 0px;
+  margin: 0px;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.bg-light {
+    background-color: var(--col-bg-light);
+}
+
+.box {
+    border-radius: var(--radius);
+    /* display: flex;
+    flex-direction: column; */
+    color: var(--col-font-main);
+}
+
+.box-title, .box-subtitle, .box-content {
+    padding: 5px var(--std-padding-large);
+}
+
+.box-title {
+    border-radius:  var(--radius) var(--radius) 0px 0px;
+    background-color: white;
+    transition: all 300ms ease-in-out;
+    font-size: var(--fnt-std-title);
+    font-weight: bold;
+    color: var(--col-font-main);
+}
+.box:hover > .box-title {
+    background-color: var(--col-hl-blue);
+    color: var(--col-bg-light); 
+}
+
+.subtitle {
+    font-size: var(--fnt-sub-title);
+    font-weight: bold;
+}
+
+.box-content {
+    font-size: var(--fnt-std-text);
+}
+
+.bar {
+    box-shadow: 0px 3px 8px 3px var(--col-bg-strong-op60);
+    padding: var(--std-padding-large);
+}
+
+/* table */
+
+.table-container, .table-container-subset {
+    display: flex ;
+    flex-direction: column;
+    gap: 2px;
+    text-align: center;
+}
+
+.table-head {
+    /* background-color: white; */
+    font-weight: bold;
+    color: var(--col-hl-green);
+    cursor: pointer;
+}
+
+.table-row {
+    background-color: white;
+    cursor:pointer;
+    border-radius: var(--radius-small);
+    border-style: solid;
+    border-width: 1px;
+    border-color: var(--col-bg-strong);
+    padding: var(--std-padding-small);
+    display: grid;
+}
+
+.header-row {
+    display: grid;
+}
+
+.table-row:hover {
+    border-color: var(--col-hl-green);
+}
+

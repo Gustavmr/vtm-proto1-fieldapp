@@ -1,0 +1,170 @@
+/* ESRI default & overrides */
+
+
+button {
+    background-color: var(--col-hl-blue);
+    border-radius: var(--radius);
+    padding: 5px 10px;
+    color: var(--col-font-contrast);
+    font-weight: bold;
+    border-style: none;
+}
+button:disabled {background-color: var(--col-hl-gray);}
+
+button.light {background-color: var(--col-bg-light); color: var(--col-font-main);}
+button.strong {background-color: var(--col-bg-strong); color: var(--col-font-main);}
+button.dark {background-color: var(--col-bg-strong-dark);}
+button.green {background-color: var(--col-hl-green-dark);}
+button.blue {background-color: var(--col-hl-blue-dark);}
+button.orange {background-color: var(--col-hl-orange-dark);}
+button.coral {background-color: var(--col-hl-coral-dark);}
+
+button.inv {
+    background-color: var(--col-font-contrast);
+    border-style: solid;
+    border-width: 2px;
+    border-color: var(--col-bg-strong-dark); 
+    color: var(--col-bg-strong-dark);
+}
+button.inv.green {border-color: var(--col-hl-green); color:  var(--col-hl-green);}
+button.inv.blue {border-color: var(--col-hl-blue); color:  var(--col-hl-blue);}
+button.inv.orange {border-color: var(--col-hl-orange); color:  var(--col-hl-orange);}
+button.inv.coral {border-color: var(--col-hl-coral); color:  var(--col-hl-coral);}
+
+button.small {
+    border-radius: var(--radius);
+    padding: 2px 5px;
+    font-size: var(--fnt-std-text);
+    font-weight: bold;
+}
+
+.close-btn {
+    cursor: pointer;
+}
+
+/*#region Tabs */
+.tab-container {
+    display: flex;
+    gap: 5px;
+    background-color: var(--col-bg-light);
+    font-size: var(--fnt-sub-title);
+}
+.tab {
+    flex: auto;
+    padding: 5px;
+    text-align: center;
+    background-color: var(--col-bg-strong);
+    opacity: 0.7;
+    transition: color 300ms ease-in-out;
+}
+.tab.selected {
+    background-color: white;
+    opacity: 1;
+} 
+.tab:hover {
+    color: var(--col-bg-strong-dark);
+    font-weight: bold;
+}
+.tab.blue:hover { color: var(--col-hl-blue); font-weight: bold;}
+.tab.green:hover { color: var(--col-hl-green); font-weight: bold;}
+.tab.coral:hover { color: var(--col-hl-coral); font-weight: bold;}
+.tab.orange:hover { color: var(--col-hl-orange); font-weight: bold;}
+/*#endregion */
+
+.tab-bottom {
+    padding: 5px;
+    text-align: center;
+    background-color: var(--col-bg-strong-dark);
+    border-radius: 0px 0px var(--radius) var(--radius);
+}
+.tab-bottom.selected {
+    background-color: var(--col-bg-strong);
+}
+.tab-bottom:hover {
+    color: var(--col-bg-strong-dark);
+    font-weight: bold;
+}
+.tab-bottom.blue:hover { color: var(--col-hl-blue); font-weight: bold;}
+.tab-bottom.green:hover { color: var(--col-hl-green); font-weight: bold;}
+.tab-bottom.coral:hover { color: var(--col-hl-coral); font-weight: bold;}
+.tab-bottom.orange:hover { color: var(--col-hl-orange); font-weight: bold;}
+.tab-bottom.white:hover { color: var(--col-font-contrast); font-weight: bold;}
+
+.three-dots:after {
+ content: '\2807';
+ font-size: 10px ;   
+}
+
+.btn-round-sm  {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    background-color: var(--col-bg-strong);
+    color: #fff;
+    border-radius: 50%;
+    height: 12px;
+    width: 12px;
+    cursor: pointer;
+}
+.btn-round-sm.dark {background-color: var(--col-bg-strong-dark);}
+.btn-round-sm.green {background-color: var(--col-hl-green-dark);}
+.btn-round-sm.blue {background-color: var(--col-hl-blue-dark);}
+.btn-round-sm.orange {background-color: var(--col-hl-orange-dark);}
+.btn-round-sm.coral {background-color: var(--col-hl-coral-dark);}
+
+.btn-round-sm-text {
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
+    font-weight: bold;
+}
+
+ /* ARROWS */
+.arrow {
+    width: 1px;
+    height: 1px;
+    border: solid var(--col-bg-strong-dark);
+    border-width: 0 2px 2px 0;
+    display: inline-block;
+    padding: 3px
+}
+.arrow.right { transform: rotate(-45deg) }
+.arrow.left { transform: rotate(135deg) }
+.arrow.up { transform: rotate(-135deg) }
+.arrow.down { transform: rotate(45deg) }
+.arrow.inverse { border-color: var(--col-font-contrast); }
+.arrow.blue { border-color: var(--col-hl-blue); }
+.arrow.orange { border-color: var(--col-hl-orange); }
+.arrow.green { border-color: var(--col-hl-green); }
+
+/* Drop Down menu */
+
+
+/* .dropdown {
+    position: absolute;
+    display: inline-block;
+    right: 0.4em;
+}
+
+.dropdown-content {
+    display: none;
+    position: relative;
+    margin-top: 60px;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+
+.show {display:block;} */

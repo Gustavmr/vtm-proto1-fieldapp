@@ -1,0 +1,22 @@
+
+
+
+
+.auth-side {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: lightpink;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+span.auth {
+    font-weight: bold;
+    color: blue;
+}
