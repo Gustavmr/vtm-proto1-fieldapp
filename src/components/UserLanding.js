@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from "react"
 import CheckIn from "./CheckIn"
+import CheckOut from "./Checkout"
+import ClientMenu from "./ClientMenu"
 import ClientSelect from "./ClientSelect"
 import { UserContext } from "./context/userContext"
 import ScreenToggler from "./general/ScreenToggler"
@@ -21,13 +23,12 @@ function UserLanding () {
         <div className="large-title">VTM Field</div>
         <button>Log out</button>
       </div>
-      <ScreenToggler screenNames={["checkin", "clientSelect", "clientMenu", "map", "checkout"]} selectedScreen={selection.screen} 
+      <ScreenToggler screenNames={["checkin", "clientSelect", "clientMenu", "checkout"]} selectedScreen={selection.screen} 
       className="full light" style={screenLayout}>
         <CheckIn setSelection={setSelection}/>
         <ClientSelect setSelection={setSelection} />
-        <div>Client Select Screen</div>
-        <div>Client Menu</div>
-        <div>Check Out</div>
+        <ClientMenu selection={selection} setSelection={setSelection}/>
+        <CheckOut selection={selection} setSelection={setSelection} />
       </ScreenToggler>
     </div>
 

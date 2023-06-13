@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react"
 import { UserContext } from "./context/userContext"
-import { BasicInput, NumberInput } from "./general/inputs"
+import { BasicInput, NumberInput, ValueSelectionDrop } from "./general/inputs"
 import { OverlayPopUp } from "./general/PopUpMenus"
 import {  postRequest } from "./general/ServerRequests"
 import { SortingColumnArray } from "./general/sorters"
@@ -46,14 +46,18 @@ function ClientSelect ({setSelection}) {
         </Tabs>
       </div>
       <SortingColumnArray nameFormatArray={tableHeaders} layout={listRowLayout} setFunction={setClientList} />
-      <div style={listLayout}>
-        {clientList.map((client, index)=>
-          <div key={index} style={listRowLayout} onClick={()=> setSelectedClient(client)}>
-            <div style={{fontSize: "12px"}}>{client.client_id}</div> 
-            <div className="overflow-ellipsis" style={{fontSize: "12px"}}>{client.client_name}</div> 
-          </div>
-        )}
-      </div>
+      {clientList.length === 0?
+        <div>No Clients Found </div> :
+        <div style={listLayout}>
+          {clientList.map((client, index)=>
+            <div key={index} style={listRowLayout} onClick={()=> setSelectedClient(client)}>
+              <div style={{fontSize: "12px"}}>{client.client_id}</div> 
+              <div className="overflow-ellipsis" style={{fontSize: "12px"}}>{client.client_name}</div> 
+            </div>
+          )}
+        </div>
+      }
+
       {selectedClient? 
         <ClientPopup setSelectedClient={setSelectedClient} selectedClient={selectedClient} setSelection={setSelection}/>
         : <div></div>
@@ -158,26 +162,31 @@ function FindByMap ({setClientList}) {
     setClientList([])
   },[])
   return (
-    <div className="box outline">
-      <div style={layout}>
-          <div></div>
-          <div style={{display: "flex", gap: "10px"}}>
-            <div className="subtitle">{"Find By Map"}</div>
-            <div>WIP</div>
-          </div>
-          <button onClick={getClients}>Search Clients</button>
-        </div>
+    <div style={layout}>
+      <div></div>
+      <div style={{display: "flex", gap: "10px"}}>
+        <div className="subtitle">{"Find By Map"}</div>
+        <div>WIP</div>
+      </div>
+      <button onClick={getClients}>Search Clients</button>
     </div>
   )
 }
 function ClientPopup ({setSelectedClient, selectedClient, setSelection}) {
+  const [visitType, setVisitType] = useState("Sales Visit")
+
   const layout = {height: "50%", width: "70%"}
+
+  const visitOptions = ["Sales Visit", "Merchandising", "Technical Visit"]
+
   const cancelSelect = () => {
     setSelectedClient(undefined)
   }
+  const checkInClient = ()=> {
+    setSelection({screen: "clientMenu", inputs: {client: selectedClient, visitType, checkinDate: new Date()}})
+  }
   const {client_id, client_name, status, sales, region, address, channel, segment} = selectedClient || {}
   
-
   return (
     <OverlayPopUp title={"Confirm Client Check-in"} setStatus={cancelSelect}>
       <div style={layout}>
@@ -189,7 +198,8 @@ function ClientPopup ({setSelectedClient, selectedClient, setSelection}) {
           <div>Region: {region}</div>
           <div>Address: {address}</div>
         </div>
-        <button onClick={()=> console.log({selectedClient})}>Client Check-in</button>
+        <ValueSelectionDrop label={"Visit Types"} valueArray={visitOptions} selectFunc={setVisitType} />
+        <button onClick={checkInClient}>Client Check-in</button>
         <button onClick={cancelSelect}>cancel</button>
       </div>
     </OverlayPopUp>
