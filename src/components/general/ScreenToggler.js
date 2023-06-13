@@ -1,5 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import './Modal.css'
 import React, { useEffect, useState } from "react";
 
 function ScreenToggler ({screenNames, selectedScreen, layout, children, className = undefined }) {

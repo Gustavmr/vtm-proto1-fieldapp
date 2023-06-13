@@ -37,6 +37,12 @@ button.small {
     font-size: var(--fnt-std-text);
     font-weight: bold;
 }
+button.large {
+    border-radius: var(--radius);
+    padding: 2px 5px;
+    font-size: 20px;
+    font-weight: bold;
+}
 
 .close-btn {
     cursor: pointer;
