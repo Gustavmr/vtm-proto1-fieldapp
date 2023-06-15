@@ -1,6 +1,6 @@
 import Axios from "axios"
 
-const getRequest = async (path) => {
+const getRequest = async (path, setFail) => {
   const output = await Axios({
     method: "GET",
     withCredentials: true,
@@ -10,6 +10,7 @@ const getRequest = async (path) => {
       if (res.data.status === "success") return res.data.output
       console.log("Data fail")
       console.log(res.data.output)
+      if (setFail) setFail(res.data.output.message)
       return undefined
     } else {
       console.log("Data not sent")
@@ -22,7 +23,7 @@ const getRequest = async (path) => {
   return output
 }
 
-const postRequest = async (path, dataInputs) => {
+const postRequest = async (path, dataInputs, setFail) => {
   const output = await Axios({
     method: "POST",
     data: dataInputs,
@@ -33,6 +34,7 @@ const postRequest = async (path, dataInputs) => {
       if (res.data.status === "success") return res.data.output
       console.log("Data fail")
       console.log(res.data.output)
+      if (setFail) setFail(res.data.output.message)
       return undefined
     } 
     console.log("Data not sent")

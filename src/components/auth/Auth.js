@@ -1,46 +1,32 @@
 import  "./auth.css"
 import Register from "./Register"
-import { useContext, useState } from "react"
-import { UserContext } from "../context/userContext"
-import Axios from "axios"
+import { useState } from "react"
 import AuthInProgress from "./AuthInProgress"
+import { postRequest } from "../general/ServerRequests"
 
-function Auth () {
+function Auth ({checkUser}) {
   const [email, setEmail] = useState("")
   const [alert, setAlert] = useState(undefined)
   const [password, setPassword] = useState("")
-  const [user, setUser] = useContext(UserContext)
 
   const contentLayout = { 
     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
     boxSizing: "border-box", margin: "0px", padding: "10px", height: "100%"
   }
 
-  const checkUser = () => {
-    Axios({
-      method: "GET",
-      withCredentials: true,
-      url: `${process.env.REACT_APP_API_ENDPOINT}user/`,
-    }).then((res) => {
-      console.log(res.data)
-      setUser(res.data);
-    });
-  };
-
   const loginUser = () => {
-    Axios({
-      method: "POST",
-      data: {email, password},
-      withCredentials: true,
-      url: `${process.env.REACT_APP_API_ENDPOINT}user/login`,
-    }).then((res) => {
-      if (res.data === 'Successfully Authenticated') {
+    postRequest('user/mobile/login', {email, password}, setAlert)
+    .then((output, fail)=> {
+      console.log({loginOutput: output, fail})
+      if (output) {
+        localStorage.setItem('loginToken', output.token)
         checkUser()
-        setAlert(undefined)
-      } else {
-        setAlert(res.data)
+        return
       }
-    });
+    }).catch((err)=> {
+      console.log({loginError: err})
+      setAlert("Something Went Wrong")
+    })
   };
 
   return (
@@ -57,6 +43,8 @@ function Auth () {
           onChange={e => setPassword(e.target.value)}/>
         </section>
         <button onClick={loginUser}>Log in</button>
+        <button onClick={checkUser}>check protected</button>
+
         {alert? <div>{alert}</div> : <div></div>}
       </div>
       

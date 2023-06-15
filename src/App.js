@@ -15,27 +15,31 @@ function App() {
   const [user, setUser] = useContext(UserContext)
   const [loading, setLoading] = useState(true)
 
-  const requestUser = () => {
-    Axios({
-      method: "GET",
-      withCredentials: true,
-      url: `${process.env.REACT_APP_API_ENDPOINT}user`,
-    }).then((res) => {
-      setUser(res.data);
-      console.log(res.data);
+  const checkUser = () => {
+    const token = localStorage.getItem('loginToken')
+
+    Axios.get(
+      `${process.env.REACT_APP_API_ENDPOINT}user/mobile/protected`,
+      {headers: {Authorization: token}}
+    ).then((res) => {
+      console.log({checkSuccess: res.data})
+      if (res.data.output && res.data.output.email) setUser(res.data.output);
+      setLoading(false)
+    }).catch((err)=> {
+      console.log({checkError: err})
+      setUser(undefined)
       setLoading(false)
     });
   };
 
   useEffect (() => {
-    requestUser();
-    console.log("test user request here")
+    checkUser();
   },[])
   
   if (loading) return (<LoadingScreen />)
   return (
     <div className="App-container">
-      { !user ? <Auth /> : user.authorized ? <UserLanding /> : <Auth />}
+      { !user ? <Auth checkUser={checkUser}/> : user.authorized ? <UserLanding /> : <Auth checkUser={checkUser}/>}
     </div>
   )
 }
