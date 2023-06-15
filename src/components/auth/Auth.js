@@ -9,11 +9,18 @@ function Auth ({checkUser}) {
   const [alert, setAlert] = useState(undefined)
   const [password, setPassword] = useState("")
 
+  // const contentLayout = { 
+  //   display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+  //   boxSizing: "border-box", margin: "0px", padding: "10px", height: "100%"
+  // }
   const contentLayout = { 
-    display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-    boxSizing: "border-box", margin: "0px", padding: "10px", height: "100%"
+    display: "grid", gridTemplateRows: "auto 1fr auto", 
+    margin: "0px",  height: "100%", justifyItems: "center"
   }
-  const formLayout = {display: "flex", flexDirection:"column", gap: "20px", width: "min(500px , 70%)"}
+  const formLayout = {
+    display: "flex", flexDirection:"column", gap: "20px", width: "min(500px , 70%)", justifyContent: "center",
+    padding: "10px"
+  }
 
   const loginUser = () => {
     postRequest('user/mobile/login', {email, password}, setAlert)
@@ -32,7 +39,7 @@ function Auth ({checkUser}) {
 
   return (
     <div style={contentLayout}>
-      <div></div>
+      <div>top test</div>
       <div style={formLayout}>
         <div> 
           <label htmlFor="email" className="mid-text bold">Email</label>
@@ -50,7 +57,7 @@ function Auth ({checkUser}) {
           : <div className="box small-text text-color-inv">_</div>
         }
       </div>
-      
+      <div>bottom test webkit 2</div>
       {/* <div>
         not a user yet? <span className="auth" onClick={() => setCurrentTab("register")}>register here</span> to get started on your VTM journey
       </div> */}
@@ -59,6 +66,7 @@ function Auth ({checkUser}) {
         {data? data.email : "no user"}
         {user? user.email : "no user"}
       </div> */}
+
     </div>
   )
 }

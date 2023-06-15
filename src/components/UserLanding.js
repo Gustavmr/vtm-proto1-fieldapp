@@ -10,7 +10,7 @@ function UserLanding () {
   const [user, setUser] = useContext(UserContext)
   const [selection, setSelection] = useState({screen: "checkin", inputs: {}})
 
-  const layout = {height: "100vh", width: "100vw", display: "grid", gridTemplateRows: "auto minmax(0,1fr)", fontSize:"16pt"}
+  const layout = {height: "100%", maxHeight: "100%",width: "100%", display: "grid", gridTemplateRows: "auto minmax(0,1fr)", fontSize:"16pt"}
   const headerLayout = {padding: "10px", display: "grid", gridTemplateColumns: "1fr auto", zIndex: 2}
   const screenLayout = {height: "100%", boxSizing: "border-box", }
 

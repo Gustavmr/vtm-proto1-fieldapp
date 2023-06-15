@@ -21,7 +21,7 @@ function ClientMenu ({selection, setSelection}) {
   }
 
   const layout = {
-    display: "grid", gridTemplateRows: "auto minmax(0, 1fr) auto", gap: "20px",
+    display: "grid", gridTemplateRows: "auto minmax(0, 70%) auto 1fr", gap: "20px",
     height: "100%", padding: "20px", boxSizing: "border-box"
   }
 
@@ -42,6 +42,7 @@ function ClientMenu ({selection, setSelection}) {
         </Tabs>
       </div>
       <button onClick={clientCheckout}>CheckOut</button>
+      <div></div>
     </div>
   )
   return <div>Loading Data</div>

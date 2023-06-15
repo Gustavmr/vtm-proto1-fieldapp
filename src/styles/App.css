@@ -8,11 +8,21 @@
 .esri-popup--shadow {
     box-shadow: 0px 8px 17px 3px var(--col-bg-strong-op60)
 }
-
+body {
+    height: -webkit-fill-available;
+}
+html {
+    height: -webkit-fill-available;
+}
 /* #region Base Styles */
+#root {
+    height: -webkit-fill-available;
+    height: 100%;
+}
 :root {
     overflow: hidden;
-    height: 100vh;
+    height: -webkit-fill-available;
+    height: 100%;
     width: 100vw;
     /* Basic colors */
     --col-font-main: #212427;
@@ -87,9 +97,9 @@
 .App-container {
   padding: 0px;
   margin: 0px;
-  height: 100vh;
+  height: -webkit-fill-available;
   width: 100vw;
-  overflow: hidden;
+  overflow: auto;
 }
 
 .bg-light {
