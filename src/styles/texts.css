@@ -1,45 +1,38 @@
 
 /* formats */
 .title {
-    font-size: var(--fnt-std-title);
+    font-size: 20pt;
     font-weight: bold;
     color: var(--col-font-main);
 }
-.title.inv {color: var(--col-font-contrast)}
 .large-title {
-    font-size: var(--fnt-lrg-title);
+    font-size: 24pt;
     font-weight: bold;
     color: var(--col-font-main);
 }
 .subtitle {
-    font-size: var(--fnt-sub-title);
+    font-size: 18pt;
     font-weight: bold;
     color: var(--col-font-main);
 }
-.subtitle.inv {color: var(--col-font-contrast)}
-
 .text-content {
-    font-size: var(--fnt-std-text);
+    font-size: 16pt;
     font-weight: normal;
-}
-.small-text {
-    font-size: var(--fnt-sml-text);
-}
-.mid-text {
-    font-size: var(--fnt-mid-text);
 }
 .label {
     color: var(--col-font-main);
     font-weight: bold;
-    font-size: var(--fnt-std-text);
+    font-size: 16pt;
 }
-.label.small {font-size: var(--fnt-sml-text)}
+.bold {font-weight: bold;}
+.label.small {font-size: 12pt}
+.small-text { font-size: 12pt;}
+.mid-text { font-size: 14pt;}
 .label.dark {color: var(--col-bg-strong-dark)}
-.label.inv {color: var(--col-font-contrast)}
-/* .label.green {color: var(--col-hl-green)}
-.label.blue {color: var(--col-hl-blue)}
-.label.orange {color: var(--col-hl-orange)}
-.label.coral {color: var(--col-hl-coral)} */
+
+
+.text-color-inv {color: var(--col-font-contrast);}
+
 
 /* effects */
 .overflow-ellipsis {
@@ -61,14 +54,14 @@
     width: auto;
     background-color: var(--col-bg-strong);
     gap: 5px;
-    font-size: 10px;
+    font-size: 14px;
     border-style: none;
     color: var(--col-font-main);
 }
 .text-bubble.small {
     padding: 2px 5px;
     border-radius: 5px;
-    font-size: 8px;
+    font-size: 12px;
     gap: 2px;
 }
 
@@ -220,7 +213,6 @@
 .text-color.bold {font-weight: bold;}
 .text-color.black {color: var(--col-font-main);}
 .text-color.inv {color: var(--col-font-contrast);}
-.text-color-inv {color: var(--col-font-contrast);}
 .text-color.light {color: var(--col-bg-strong);}
 .text-color.blue {color: var(--col-hl-blue)}
 .text-color.green {color: var(--col-hl-green)}

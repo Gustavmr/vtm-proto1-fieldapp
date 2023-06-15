@@ -8,6 +8,7 @@ button {
     color: var(--col-font-contrast);
     font-weight: bold;
     border-style: none;
+    font-size: 16pt;
 }
 button:disabled {background-color: var(--col-hl-gray);}
 
@@ -34,7 +35,7 @@ button.inv.coral {border-color: var(--col-hl-coral); color:  var(--col-hl-coral)
 button.small {
     border-radius: var(--radius);
     padding: 2px 5px;
-    font-size: var(--fnt-std-text);
+    font-size: 12pt;
     font-weight: bold;
 }
 button.large {
@@ -47,54 +48,6 @@ button.large {
 .close-btn {
     cursor: pointer;
 }
-
-/*#region Tabs */
-.tab-container {
-    display: flex;
-    gap: 5px;
-    background-color: var(--col-bg-light);
-    font-size: var(--fnt-sub-title);
-}
-.tab {
-    flex: auto;
-    padding: 5px;
-    text-align: center;
-    background-color: var(--col-bg-strong);
-    opacity: 0.7;
-    transition: color 300ms ease-in-out;
-}
-.tab.selected {
-    background-color: white;
-    opacity: 1;
-} 
-.tab:hover {
-    color: var(--col-bg-strong-dark);
-    font-weight: bold;
-}
-.tab.blue:hover { color: var(--col-hl-blue); font-weight: bold;}
-.tab.green:hover { color: var(--col-hl-green); font-weight: bold;}
-.tab.coral:hover { color: var(--col-hl-coral); font-weight: bold;}
-.tab.orange:hover { color: var(--col-hl-orange); font-weight: bold;}
-/*#endregion */
-
-.tab-bottom {
-    padding: 5px;
-    text-align: center;
-    background-color: var(--col-bg-strong-dark);
-    border-radius: 0px 0px var(--radius) var(--radius);
-}
-.tab-bottom.selected {
-    background-color: var(--col-bg-strong);
-}
-.tab-bottom:hover {
-    color: var(--col-bg-strong-dark);
-    font-weight: bold;
-}
-.tab-bottom.blue:hover { color: var(--col-hl-blue); font-weight: bold;}
-.tab-bottom.green:hover { color: var(--col-hl-green); font-weight: bold;}
-.tab-bottom.coral:hover { color: var(--col-hl-coral); font-weight: bold;}
-.tab-bottom.orange:hover { color: var(--col-hl-orange); font-weight: bold;}
-.tab-bottom.white:hover { color: var(--col-font-contrast); font-weight: bold;}
 
 .three-dots:after {
  content: '\2807';

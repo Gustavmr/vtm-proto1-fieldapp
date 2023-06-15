@@ -19,11 +19,11 @@ function ClientSelect ({setSelection}) {
     height: "100%", padding: "10px", boxSizing: "border-box"
   }
   const listLayout = {height: "100%", overflow: "auto", display: "flex", flexDirection: "column", gap: "5px"}
-  const listRowLayout = {display: "grid", gridTemplateColumns: "70px minmax(0,1fr)", gap: "10px"}
+  const listRowLayout = {display: "grid", gridTemplateColumns: "70px minmax(0,1fr)", gap: "10px", padding: "3px 10px"}
 
   const tableHeaders = [
-    {name: "client_id", display: "ID", format: {textAlign: "center", fontWeight: "bold", fontSize: "15px"}},
-    {name: "client_name", display: "Name", format: {textAlign: "left" , fontWeight: "bold", fontSize: "15px"}},
+    {name: "client_id", display: "ID", format: {textAlign: "center", fontWeight: "bold", fontSize: "16pt"}},
+    {name: "client_name", display: "Name", format: {textAlign: "left" , fontWeight: "bold", fontSize: "16pt"}},
   ]
 
   useEffect(()=> {
@@ -47,12 +47,12 @@ function ClientSelect ({setSelection}) {
       </div>
       <SortingColumnArray nameFormatArray={tableHeaders} layout={listRowLayout} setFunction={setClientList} />
       {clientList.length === 0?
-        <div>No Clients Found </div> :
+        <div style={{textAlign: "center"}}>No Clients Found </div> :
         <div style={listLayout}>
           {clientList.map((client, index)=>
-            <div key={index} style={listRowLayout} onClick={()=> setSelectedClient(client)}>
-              <div style={{fontSize: "12px"}}>{client.client_id}</div> 
-              <div className="overflow-ellipsis" style={{fontSize: "12px"}}>{client.client_name}</div> 
+            <div key={index} style={listRowLayout} onClick={()=> setSelectedClient(client)} className="full shade">
+              <div style={{fontSize: "16pt"}}>{client.client_id}</div> 
+              <div className="overflow-ellipsis" style={{fontSize: "16pt"}}>{client.client_name}</div> 
             </div>
           )}
         </div>
@@ -70,7 +70,7 @@ function FindAroundMe ({setClientList, iniIndex}) {
   const defaultDistance = 2
   const [distance, setDistance] = useState(defaultDistance)
 
-  const layout = {display: "grid", gridTemplateRows: "auto auto auto", gap: "10px", padding: "5px"}
+  const layout = {display: "grid", gridTemplateRows: "auto auto auto", gap: "10px", padding: "10px"}
 
   function coordinationBoundaries(lat, lng, km) {
     const lat_min = lat - km/110.574
@@ -109,7 +109,7 @@ function FindAroundMe ({setClientList, iniIndex}) {
       {iniIndex === 0 ? 
         <div style={layout}>
           <div></div>
-          <div style={{display: "flex", gap: "10px"}}>
+          <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
             <div className="subtitle">{"Search Distance (km)"}</div>
             <NumberInput value={distance} setFunc={setDistance} />
           </div>
@@ -125,7 +125,7 @@ function FindAroundMe ({setClientList, iniIndex}) {
 function FindByName ({setClientList}) {
   const [clientName, setClientName] = useState("")
 
-  const layout = {display: "grid", gridTemplateRows: "auto auto auto", gap: "10px", padding: "5px"}
+  const layout = {display: "grid", gridTemplateRows: "auto auto auto", gap: "10px", padding: "10px"}
 
   const getClients = () => {
     postRequest("field/clients/search_name", {clientName})
@@ -141,7 +141,7 @@ function FindByName ({setClientList}) {
   return (
     <div className="box" style={layout}>
       <div></div>
-      <div style={{display: "flex", gap: "10px"}}>
+      <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
         <div className="subtitle">{"Client Name"}</div>
         <BasicInput value={clientName} setFunc={setClientName} />
       </div>
@@ -152,7 +152,7 @@ function FindByName ({setClientList}) {
 function FindByMap ({setClientList}) {
   // const [clientName, setClientName] = useState("")
 
-  const layout = {display: "grid", gridTemplateRows: "auto auto auto", gap: "10px", padding: "5px"}
+  const layout = {display: "grid", gridTemplateRows: "auto auto auto", gap: "10px", padding: "10px"}
 
   const getClients = () => {
     console.log("get map clients")
@@ -164,7 +164,7 @@ function FindByMap ({setClientList}) {
   return (
     <div style={layout}>
       <div></div>
-      <div style={{display: "flex", gap: "10px"}}>
+      <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
         <div className="subtitle">{"Find By Map"}</div>
         <div>WIP</div>
       </div>
@@ -175,8 +175,7 @@ function FindByMap ({setClientList}) {
 function ClientPopup ({setSelectedClient, selectedClient, setSelection}) {
   const [visitType, setVisitType] = useState("Sales Visit")
 
-  const layout = {height: "50%", width: "70%"}
-
+  const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", maxWidth: "75vw", padding: "10px"}
   const visitOptions = ["Sales Visit", "Merchandising", "Technical Visit"]
 
   const cancelSelect = () => {
@@ -188,17 +187,26 @@ function ClientPopup ({setSelectedClient, selectedClient, setSelection}) {
   const {client_id, client_name, status, sales, region, address, channel, segment} = selectedClient || {}
   
   return (
-    <OverlayPopUp title={"Confirm Client Check-in"} setStatus={cancelSelect}>
+    <OverlayPopUp title={"Confirm Check-in"} setStatus={cancelSelect}>
       <div style={layout}>
-        <div className="box-section full shade">
-          <div>{`${client_name} (${client_id})`}</div>
-          <div>Status: {status}</div>
-          <div>{"Sales (last 12 months):"} {formatValue(sales, "$auto")}</div>
-          <div>Segment: {channel} {segment}</div>
-          <div>Region: {region}</div>
-          <div>Address: {address}</div>
+        <div className="box-section full shade small-text">
+          <div style={{display: "grid", gridTemplateColumns: "minmax(0, 1fr) 80px"}}>
+            <div>
+              <div className="bold overflow-ellipsis">{`${client_name} (${client_id})`}</div>
+              <div className="bold overflow-ellipsis">{channel} - {segment}</div>
+              <div className="bold overflow-ellipsis">{region}</div>
+              <div ariaRowspan={2} className="overflow-ellipsis" style={{fontSize: "10pt"}}>{address}</div>
+
+            </div>
+            <div className="box-section full dark text-color-inv">
+              <div style={{fontSize: "10pt"}}>{"Sales (TTM)"} </div>
+              <div className="subtitle text-color-inv">{formatValue(sales, "$auto")}</div>
+              <div style={{fontSize: "12pt"}}>{status}</div>
+            </div>
+          </div>
         </div>
-        <ValueSelectionDrop label={"Visit Types"} valueArray={visitOptions} selectFunc={setVisitType} />
+        <div className="bold mid-text">Select Visit Type</div>
+        <ValueSelectionDrop valueArray={visitOptions} selectFunc={setVisitType} />
         <button onClick={checkInClient}>Client Check-in</button>
         <button onClick={cancelSelect}>cancel</button>
       </div>

@@ -4,7 +4,7 @@ const getRequest = async (path, setFail) => {
   const output = await Axios({
     method: "GET",
     withCredentials: true,
-    url: `${process.env.REACT_APP_API_ENDPOINT}${path}`,
+    url: process.env.NODE_ENV === "production"? `${process.env.REACT_APP_API_ENDPOINT}${path}` : `http://localhost:8081/${path}`,
   }).then((res) => {
     if (res.data) {
       if (res.data.status === "success") return res.data.output
@@ -28,7 +28,7 @@ const postRequest = async (path, dataInputs, setFail) => {
     method: "POST",
     data: dataInputs,
     withCredentials: true,
-    url: `${process.env.REACT_APP_API_ENDPOINT}${path}`,
+    url: process.env.NODE_ENV === "production"? `${process.env.REACT_APP_API_ENDPOINT}${path}` : `http://localhost:8081/${path}`,
   }).then((res) => {
     if (res.data) {
       if (res.data.status === "success") return res.data.output

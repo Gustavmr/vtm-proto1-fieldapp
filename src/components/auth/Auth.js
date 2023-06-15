@@ -1,8 +1,8 @@
-import  "./auth.css"
 import Register from "./Register"
 import { useState } from "react"
 import AuthInProgress from "./AuthInProgress"
 import { postRequest } from "../general/ServerRequests"
+import { BasicInput, PasswordInput } from "../general/inputs"
 
 function Auth ({checkUser}) {
   const [email, setEmail] = useState("")
@@ -13,6 +13,7 @@ function Auth ({checkUser}) {
     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
     boxSizing: "border-box", margin: "0px", padding: "10px", height: "100%"
   }
+  const formLayout = {display: "flex", flexDirection:"column", gap: "20px", width: "min(500px , 70%)"}
 
   const loginUser = () => {
     postRequest('user/mobile/login', {email, password}, setAlert)
@@ -31,21 +32,23 @@ function Auth ({checkUser}) {
 
   return (
     <div style={contentLayout}>
-      <div className="auth-form">
+      <div></div>
+      <div style={formLayout}>
+        <div> 
+          <label htmlFor="email" className="mid-text bold">Email</label>
+          <BasicInput value={email} setFunc={setEmail}/>
+        </div>
         <section> 
-          <label htmlFor="email">Email</label>
-          <input id="email" placeholder="Email" type="email" value={email}
-          onChange={e => setEmail(e.target.value)}/>
-        </section>
-        <section> 
-          <label htmlFor="password">Password</label>
-          <input id="password" placeholder="Password" type="password" value={password}
-          onChange={e => setPassword(e.target.value)}/>
+          <label htmlFor="password" className="mid-text bold">Password</label>
+          <PasswordInput value={password} setFunc={setPassword} />
+          {/* <input id="password" placeholder="Password" type="password" value={password}
+          onChange={e => setPassword(e.target.value)}/> */}
         </section>
         <button onClick={loginUser}>Log in</button>
-        <button onClick={checkUser}>check protected</button>
-
-        {alert? <div>{alert}</div> : <div></div>}
+        {alert? 
+          <div className="box-section full shade coral text-color small-text">{alert}</div> 
+          : <div className="box small-text text-color-inv">_</div>
+        }
       </div>
       
       {/* <div>

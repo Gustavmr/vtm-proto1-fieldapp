@@ -66,12 +66,12 @@
     --col-alert-pink: #fe288cff;
 
     /*font sizes */
-    --fnt-std-title: 14px;
-    --fnt-sub-title: 12px;
-    --fnt-std-text: 10px;
-    --fnt-mid-text: 9px;
-    --fnt-sml-text: 8px;
-    --fnt-lrg-title: 18px; 
+    --fnt-std-title: 20px;
+    --fnt-sub-title: 18px;
+    --fnt-std-text: 16px;
+    --fnt-mid-text: 14px;
+    --fnt-sml-text: 12px;
+    --fnt-lrg-title: 24px; 
     
     /*Std sizing*/
     --std-padding: 5px;

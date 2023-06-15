@@ -22,7 +22,7 @@ function ClientMenu ({selection, setSelection}) {
 
   const layout = {
     display: "grid", gridTemplateRows: "auto minmax(0, 1fr) auto", gap: "20px",
-    height: "100%", padding: "10px", boxSizing: "border-box"
+    height: "100%", padding: "20px", boxSizing: "border-box"
   }
 
   useEffect(()=> {
@@ -31,7 +31,7 @@ function ClientMenu ({selection, setSelection}) {
   if (user && client) return(
     <div style={layout}>
       <div style={{display:"grid", gridTemplateColumns: "1fr auto"}}>
-        <div className="title">{client.client_name}</div>
+        <div className="title overflow-ellipsis">{client.client_name}</div>
         <button onClick={cancelCheckIn}>cancel</button>
       </div>
       <div className="box outline">

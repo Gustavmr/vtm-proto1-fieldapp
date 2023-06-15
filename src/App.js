@@ -19,7 +19,7 @@ function App() {
     const token = localStorage.getItem('loginToken')
 
     Axios.get(
-      `${process.env.REACT_APP_API_ENDPOINT}user/mobile/protected`,
+      `${process.env.NODE_ENV === "production"? `${process.env.REACT_APP_API_ENDPOINT}` : "http://localhost:8081/"}user/mobile/protected`,
       {headers: {Authorization: token}}
     ).then((res) => {
       console.log({checkSuccess: res.data})

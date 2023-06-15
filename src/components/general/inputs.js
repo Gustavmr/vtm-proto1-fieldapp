@@ -5,8 +5,9 @@ const styles = {
   noLabel: {display: "flex", flexDirection: "column"},
   inLine: {display: "flex", flexDirection: "row", gap: "3px"}
 }
+const defaultClass = "text-bubble dark text-content"
 // Basic
-function BasicInput ({label, value, setFunc, className = "text-bubble dark", labelStyle= "standard"}) {
+function BasicInput ({label, value, setFunc, className = defaultClass, labelStyle= "standard"}) {
   return(  
     <div style={label? styles[labelStyle] : styles["noLabel"]}>
       {label? <label>{label}</label> : <div></div>}
@@ -14,7 +15,7 @@ function BasicInput ({label, value, setFunc, className = "text-bubble dark", lab
     </div>
   )
 }
-function BasicInputKey ({name, label, value,  setFunc, className = "text-bubble dark", labelStyle= "standard"}) {
+function BasicInputKey ({name, label, value,  setFunc, className = defaultClass, labelStyle= "standard"}) {
   return(  
     <div style={label? styles[labelStyle] : styles["noLabel"]}>
       {label? <label>{label}</label> : <div></div>}
@@ -22,7 +23,7 @@ function BasicInputKey ({name, label, value,  setFunc, className = "text-bubble 
     </div>
   )
 }
-function BasicInputIndex ({index, value, label , setFunc, className = "text-bubble dark", labelStyle= "standard"}) {
+function BasicInputIndex ({index, value, label , setFunc, className = defaultClass, labelStyle= "standard"}) {
 
   return(  
     <div style={label? styles[labelStyle] : styles["noLabel"]}>
@@ -31,7 +32,7 @@ function BasicInputIndex ({index, value, label , setFunc, className = "text-bubb
     </div>
   )
 }
-function BasicInputParams ({params, value, label , setFunc, className = "text-bubble dark", labelStyle= "standard"}) {
+function BasicInputParams ({params, value, label , setFunc, className = defaultClass, labelStyle= "standard"}) {
   return(  
     <div style={label? styles[labelStyle] : styles["noLabel"]}>
       {label? <label>{label}</label> : <div></div>}
@@ -40,7 +41,7 @@ function BasicInputParams ({params, value, label , setFunc, className = "text-bu
   )
 }
 // Basic number input
-function NumberInput ({label, value, setFunc, className = "text-bubble dark", labelStyle= "standard"}) {
+function NumberInput ({label, value, setFunc, className = defaultClass, labelStyle= "standard"}) {
   return(  
     <div style={label? styles[labelStyle] : styles["noLabel"]}>
       {label? <label>{label}</label> : <div></div>}
@@ -48,7 +49,7 @@ function NumberInput ({label, value, setFunc, className = "text-bubble dark", la
     </div>
   )
 }
-function NumberInputKey ({name, label, value,  setFunc, className = "text-bubble dark", labelStyle= "standard"}) {
+function NumberInputKey ({name, label, value,  setFunc, className = defaultClass, labelStyle= "standard"}) {
   return(  
     <div style={label? styles[labelStyle] : styles["noLabel"]}>
       {label? <label>{label}</label> : <div></div>}
@@ -56,7 +57,7 @@ function NumberInputKey ({name, label, value,  setFunc, className = "text-bubble
     </div>
   )
 }
-function NumberInputIndex ({index, value, label , setFunc, className = "text-bubble dark", labelStyle= "standard"}) {
+function NumberInputIndex ({index, value, label , setFunc, className = defaultClass, labelStyle= "standard"}) {
   return(  
     <div style={label? styles[labelStyle] : styles["noLabel"]}>
       {label? <label>{label}</label> : <div></div>}
@@ -64,7 +65,7 @@ function NumberInputIndex ({index, value, label , setFunc, className = "text-bub
     </div>
   )
 }
-function NumberInputParams ({params, value, label , setFunc, className = "text-bubble dark", labelStyle= "standard"}) {
+function NumberInputParams ({params, value, label , setFunc, className = defaultClass, labelStyle= "standard"}) {
   return(  
     <div style={label? styles[labelStyle] : styles["noLabel"]}>
       {label? <label>{label}</label> : <div></div>}
@@ -72,14 +73,22 @@ function NumberInputParams ({params, value, label , setFunc, className = "text-b
     </div>
   )
 }
-
+function PasswordInput ({label, value, setFunc, className = defaultClass, labelStyle= "standard"}) {
+  return(  
+    <div style={label? styles[labelStyle] : styles["noLabel"]}>
+      {label? <label>{label}</label> : <div></div>}
+      <input type="password"  style={{textAlign: "right"}}  className={className} value={value} 
+      onChange={(e) => setFunc(e.target.value)}/>
+    </div>
+  )
+}
 // Text Area
 function TextAreaInput ({name, label, value, setFunc, rows}) {
   const textRows = rows || 3
   return(  
     <div className={name} style={{display: "flex", flexDirection: "column", gap: "5px"}}>
       <label htmlFor={`input-${name}`}>{label}</label>
-      <textarea className="text-bubble dark" id={`input-${name}`} rows={textRows} placeholder="-" value={value} onChange={(e) => setFunc(e.target.value)}/>
+      <textarea className={defaultClass} id={`input-${name}`} rows={textRows} placeholder="-" value={value} onChange={(e) => setFunc(e.target.value)}/>
     </div>
   )
 }
@@ -87,7 +96,7 @@ function TextAreaInputKey ({name, description, value, setFunc}) {
   return(  
     <div className={name} style={{display: "flex", flexDirection: "column", gap: "5px"}}>
       <label htmlFor={`input-${name}`}>{description}</label>
-      <textarea className="text-bubble dark" id={`input-${name}`} placeholder="-" value={value} onChange={(e) => setFunc(name, e.target.value)}/>
+      <textarea className={defaultClass} id={`input-${name}`} placeholder="-" value={value} onChange={(e) => setFunc(name, e.target.value)}/>
     </div>
   )
 }
@@ -147,14 +156,16 @@ function DateSelectionKey ({name, label, value, setFunct} ) {
 }
 
 // Dropdown
-function ValueSelectionDrop ({label, current, valueArray, selectFunc, className='text-bubble dark', 
+function ValueSelectionDrop ({label, current, valueArray, selectFunc, className='text-bubble dark bold', 
 labelStyle = "standard", hiddenValues = [], disabled = false}) {
   if (!current && selectFunc) selectFunc(valueArray[0])
   return (
     <div  style={label? styles[labelStyle] : styles["noLabel"]}>
       {label? <label>{label}</label> : <div></div>}
       <select className={className} name="selector" value={current} onChange={(e)=> selectFunc(e.target.value)} disabled={disabled}>
-        {valueArray.map((value) => <option value={value} key={value} hidden={hiddenValues.includes(value)}>{value}</option> )}
+        {valueArray.map((value) => 
+          <option className="bold" value={value} key={value} hidden={hiddenValues.includes(value)}>{value}</option> 
+        )}
       </select>
     </div>
   )
@@ -267,6 +278,7 @@ function ParameterIncrement ({className, title, value, setFunct, increment, chil
 export {
   BasicInput, BasicInputKey, BasicInputIndex, BasicInputParams,
   NumberInput, NumberInputKey, NumberInputIndex, NumberInputParams,
+  PasswordInput,
   TextAreaInput, TextAreaInputKey,
   ValueSelectionDrop, ValueSelectionDropKey,
   ActionIncrement, 

@@ -1,4 +1,3 @@
-import { Axios } from "axios"
 import { useContext, useEffect, useState } from "react"
 import CheckIn from "./CheckIn"
 import CheckOut from "./Checkout"
@@ -6,14 +5,13 @@ import ClientMenu from "./ClientMenu"
 import ClientSelect from "./ClientSelect"
 import { UserContext } from "./context/userContext"
 import ScreenToggler from "./general/ScreenToggler"
-import { postRequest } from "./general/ServerRequests"
 
 function UserLanding () {
   const [user, setUser] = useContext(UserContext)
   const [selection, setSelection] = useState({screen: "checkin", inputs: {}})
 
-  const layout = {height: "100vh", width: "100vw", display: "grid", gridTemplateRows: "auto minmax(0,1fr)"}
-  const headerLayout = {padding: "5px", display: "grid", gridTemplateColumns: "1fr auto", zIndex: 2}
+  const layout = {height: "100vh", width: "100vw", display: "grid", gridTemplateRows: "auto minmax(0,1fr)", fontSize:"16pt"}
+  const headerLayout = {padding: "10px", display: "grid", gridTemplateColumns: "1fr auto", zIndex: 2}
   const screenLayout = {height: "100%", boxSizing: "border-box", }
 
   const logoutUser = () => {

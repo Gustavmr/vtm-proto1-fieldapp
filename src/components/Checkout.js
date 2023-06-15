@@ -14,8 +14,9 @@ function CheckOut ({selection, setSelection}) {
 
   const layout = {
     display: "grid", gridTemplateRows: "auto 1fr auto auto auto auto 1fr", alignItems: "center", gap: "20px",
-    height: "100%", padding: "20px", boxSizing: "border-box"
+    height: "100%", width: "100%", padding: "20px", boxSizing: "border-box"
   }
+  const buttonLayout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "20px"}
 
   const checkoutOptions = ["NA", "Client Not Available","Visit Successful", "Visit Unsuccessful"]
 
@@ -42,16 +43,17 @@ function CheckOut ({selection, setSelection}) {
   if (user && client) return(
     <div  style={layout}>
       <div style={{display:"grid", gridTemplateColumns: "1fr auto"}}>
-        <div className="title">{client.client_name}</div>
+        <div className="title overflow-ellipsis">{client.client_name}</div>
         <button onClick={backToClientMenu}>back</button>
       </div>
-      <div></div>
-      <ValueSelectionDrop label={"Visit Outcome"} valueArray={checkoutOptions} current={visitOutcome} selectFunc={setVisitOutcome}/>
-      <TextAreaInput label={"Visit Notes:"} rows={3} setFunc={setVisitNotes} />
-      <button className="large" onClick={clientCheckOut} style={{width: "200px"}} disabled={!visitOutcome || visitOutcome === "NA"}>
-        Client Check-out
-      </button>
-      <button className="large" onClick={cancel} style={{width: "200px"}}>Cancel</button>
+      <div style={buttonLayout}>
+        <ValueSelectionDrop label={"Visit Outcome"} valueArray={checkoutOptions} current={visitOutcome} selectFunc={setVisitOutcome}/>
+        <TextAreaInput label={"Visit Notes:"} rows={3} setFunc={setVisitNotes} />
+        <button className="large" onClick={clientCheckOut}  disabled={!visitOutcome || visitOutcome === "NA"}>
+          Client Check-out
+        </button>
+        <button className="large" onClick={cancel}>Cancel</button>
+      </div>
       <div></div>
     </div>
   )

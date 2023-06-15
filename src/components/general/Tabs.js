@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import "./Tabs.css"
 import {useState} from "react";
 
 function Tabs ({titleArray, children, color, boxStyle, initialIndex = 0}) {
     const [selection, setSelection] = useState(initialIndex);
-
-    // Tab Selection    
 
     return (
         <div style={{display:"grid", gridTemplateRows: "auto minmax(0, 1fr)"}}>
