@@ -138,6 +138,14 @@ function SimpleIncrementIndex ({index, title, value, setFunct, increment, color}
 }
 
 // Date Selection
+function DateSelection ({label, value, setFunct, hideLabel} ) {
+  return(  
+    <div onClick={(e)=> e.stopPropagation()}>
+      {hideLabel? <div></div> : <label>{label}</label>}
+      <input className="text-bubble small" type="date" placeholder="-" value={value} onChange={(e) => setFunct(e.target.value)}/>
+    </div>
+  )
+}
 function DateSelectionIndex ({index, label, value, setFunct, hideLabel} ) {
   return(  
     <div onClick={(e)=> e.stopPropagation()}>
@@ -284,7 +292,7 @@ export {
   ActionIncrement, 
   ParameterIncrement, 
   SimpleIncrement, SimpleIncrementIndex,
-  DateSelectionIndex, DateSelectionKey,
+  DateSelection, DateSelectionIndex, DateSelectionKey,
   ValueSlider, ValueSliderKey,
   SimpleCheckbox, SimpleCheckboxKey, SimpleCheckboxIndex
  }

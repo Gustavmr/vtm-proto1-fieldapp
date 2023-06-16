@@ -22,11 +22,9 @@ function App() {
       `${process.env.NODE_ENV === "production"? `${process.env.REACT_APP_API_ENDPOINT}` : "http://localhost:8081/"}user/mobile/protected`,
       {headers: {Authorization: token}}
     ).then((res) => {
-      console.log({checkSuccess: res.data})
       if (res.data.output && res.data.output.email) setUser(res.data.output);
       setLoading(false)
     }).catch((err)=> {
-      console.log({checkError: err})
       setUser(undefined)
       setLoading(false)
     });

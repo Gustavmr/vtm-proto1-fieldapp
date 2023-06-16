@@ -151,12 +151,12 @@ const arraySorter = (objectArray, sortVariableName, descending = true) => {
   // const type = testValue[sortVariableName].isFinite()? "number" : typeof(testValue[sortVariableName]) === "string"? "string" : undefined
 
   if (testValue[sortVariableName] && (typeof(testValue[sortVariableName]) === "number" || typeof(testValue[sortVariableName]) === "boolean")) {
-    if (descending) return objectArray.sort((a,b) => b[sortVariableName]-a[sortVariableName])
-    return objectArray.sort((a,b) => a[sortVariableName]-b[sortVariableName])
+    if (descending) return objectArray.sort((a,b) => (b[sortVariableName] || 0)-(a[sortVariableName] || 0))
+    return objectArray.sort((a,b) =>( a[sortVariableName] || 0)-(b[sortVariableName] || 0))
   }
   if (testValue[sortVariableName] && typeof(testValue[sortVariableName]) === "string") {
-    if (descending) return objectArray.sort((a,b) => b[sortVariableName].localeCompare(a[sortVariableName]))
-    return objectArray.sort((a,b) => a[sortVariableName].localeCompare(b[sortVariableName]))
+    if (descending) return objectArray.sort((a,b) => (b[sortVariableName] || "").localeCompare(a[sortVariableName] || " "))
+    return objectArray.sort((a,b) => (a[sortVariableName] || " ").localeCompare(b[sortVariableName] || " "))
   }
 }
 

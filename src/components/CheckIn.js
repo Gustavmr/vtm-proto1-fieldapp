@@ -16,7 +16,7 @@ function CheckIn ({setSelection}) {
     setSelection({screen: "clientSelect", inputs: {}})
   }
   const goToVisitLog = () => {
-    console.log("Visit History")
+    setSelection({screen: "visitLogs", inputs: {}})
     // setSelection({screen: "clientSelect", inputs: {}})
   }
   const goToNewClient = () => {

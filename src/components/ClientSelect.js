@@ -13,6 +13,7 @@ function ClientSelect ({setSelection}) {
   const [iniIndex, setIniIndex] = useState(undefined) // Initial screen (depending on location activated or not)
   const [clientList, setClientList] = useState([]) // Std Output client list from all search options
   const [selectedClient, setSelectedClient] = useState(undefined)
+  const [geolocation, setGeolocation] = useState(undefined)
 
   const layout = {
     display: "grid", gridTemplateRows: "auto auto auto minmax(0, 1fr) auto", gap: "20px",
@@ -26,9 +27,13 @@ function ClientSelect ({setSelection}) {
     {name: "client_name", display: "Name", format: {textAlign: "left" , fontWeight: "bold", fontSize: "16pt"}},
   ]
 
+  const cancelCheckIn = () => {
+    setSelection({screen: "checkin", inputs:{}})
+  }
   useEffect(()=> {
     navigator.geolocation.getCurrentPosition((position)=> {
       console.log({position, lat: position.coords.latitude, lng: position.coords.longitude})
+      setGeolocation({lat: position.coords.latitude, lng: position.coords.longitude})
       setIniIndex(0)
     }, (error)=> {
       console.log({error})
@@ -37,7 +42,10 @@ function ClientSelect ({setSelection}) {
   },[])
   if (user && (iniIndex || iniIndex === 0)) return(
     <div style={layout}>
-      <div className="title">Select Client</div>
+      <div style={{display:"grid", gridTemplateColumns: "1fr auto"}}>
+        <div className="title overflow-ellipsis">Select Client</div>
+        <button onClick={cancelCheckIn}>cancel</button>
+      </div>
       <div className="box outline">
         <Tabs titleArray={["Around Me", "By Name", "Map"]} initialIndex={iniIndex} >
           <FindAroundMe setClientList={setClientList} iniIndex={iniIndex}/>
@@ -59,7 +67,7 @@ function ClientSelect ({setSelection}) {
       }
 
       {selectedClient? 
-        <ClientPopup setSelectedClient={setSelectedClient} selectedClient={selectedClient} setSelection={setSelection}/>
+        <ClientPopup setSelectedClient={setSelectedClient} selectedClient={selectedClient} setSelection={setSelection} geolocation={geolocation}/>
         : <div></div>
       }
     </div>
@@ -172,7 +180,7 @@ function FindByMap ({setClientList}) {
     </div>
   )
 }
-function ClientPopup ({setSelectedClient, selectedClient, setSelection}) {
+function ClientPopup ({setSelectedClient, selectedClient, setSelection, geolocation}) {
   const [visitType, setVisitType] = useState("Sales Visit")
 
   const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", maxWidth: "75vw", padding: "10px"}
@@ -182,7 +190,7 @@ function ClientPopup ({setSelectedClient, selectedClient, setSelection}) {
     setSelectedClient(undefined)
   }
   const checkInClient = ()=> {
-    setSelection({screen: "clientMenu", inputs: {client: selectedClient, visitType, checkinDate: new Date()}})
+    setSelection({screen: "clientMenu", inputs: {client: selectedClient, visitType, checkinDate: new Date(), geolocation}})
   }
   const {client_id, client_name, status, sales, region, address, channel, segment} = selectedClient || {}
   

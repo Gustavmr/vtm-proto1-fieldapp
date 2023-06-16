@@ -5,6 +5,7 @@ import ClientMenu from "./ClientMenu"
 import ClientSelect from "./ClientSelect"
 import { UserContext } from "./context/userContext"
 import ScreenToggler from "./general/ScreenToggler"
+import VisitLogs from "./VisitLogs"
 
 function UserLanding () {
   const [user, setUser] = useContext(UserContext)
@@ -28,12 +29,13 @@ function UserLanding () {
         <div className="large-title">VTM Field</div>
         <button onClick={logoutUser}>Log out</button>
       </div>
-      <ScreenToggler screenNames={["checkin", "clientSelect", "clientMenu", "checkout"]} selectedScreen={selection.screen} 
+      <ScreenToggler screenNames={["checkin", "clientSelect", "clientMenu", "checkout", "visitLogs"]} selectedScreen={selection.screen} 
       className="full light" style={screenLayout}>
         <CheckIn setSelection={setSelection}/>
         <ClientSelect setSelection={setSelection} />
         <ClientMenu selection={selection} setSelection={setSelection}/>
         <CheckOut selection={selection} setSelection={setSelection} />
+        <VisitLogs selection={selection} setSelection={setSelection} />
       </ScreenToggler>
     </div>
 
