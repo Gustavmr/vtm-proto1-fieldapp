@@ -1,7 +1,7 @@
 import { useContext } from "react"
 import { UserContext } from "./context/userContext"
 
-function CheckIn ({setSelection}) {
+function CheckIn ({setSelection, visitCounts}) {
   const [user,] = useContext(UserContext)
 
   const layout = {
@@ -29,9 +29,18 @@ function CheckIn ({setSelection}) {
       <div></div>
       <div className="box" style={userBox}>
         <div className="title">{user.displayName}</div>
-        <div>{"Visits 12 months"}</div>
-        <div>{"Visits 1 month"}</div>
-        <div>{"Progress vs annual plan"}</div>
+        <div style={{display: "flex", gap: "5px"}}>
+          <span className="text-bubble mid-text"> {visitCounts.visits_1m}</span>
+          <span className="small-text flex-center-all">Visits last month</span>
+        </div>
+        <div style={{display: "flex", gap: "5px"}}>
+          <span className="text-bubble mid-text"> {visitCounts.visits_3m}</span>
+          <span className="small-text flex-center-all">Visits in 3 months</span>
+        </div>
+        <div style={{display: "flex", gap: "5px"}}>
+          <span className="text-bubble mid-text"> {visitCounts.visits_12m}</span>
+          <span className="small-text flex-center-all">Visits in 12 months</span>
+        </div>
         <button className={"full dark"} onClick={goToVisitLog}>
           Visit Log
         </button>

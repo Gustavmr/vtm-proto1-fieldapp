@@ -214,6 +214,7 @@
 .text-color.black {color: var(--col-font-main);}
 .text-color.inv {color: var(--col-font-contrast);}
 .text-color.light {color: var(--col-bg-strong);}
+.text-color.dark {color: var(--col-bg-strong-dark)}
 .text-color.blue {color: var(--col-hl-blue)}
 .text-color.green {color: var(--col-hl-green)}
 .text-color.coral {color: var(--col-hl-coral)}

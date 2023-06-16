@@ -3,11 +3,11 @@ import { useContext, useEffect, useState } from "react"
 import { UserContext } from "./context/userContext"
 import { DateSelectionKey, TextAreaInputKey, ValueSelectionDrop, ValueSelectionDropKey } from "./general/inputs"
 import { OverlayPopUp } from "./general/PopUpMenus"
-import {  postRequest } from "./general/ServerRequests"
+import { postRequest } from "./general/ServerRequests"
 import { SortingColumnArray } from "./general/sorters"
 import { duplicateObject } from "./general/supportFunctions"
 
-function VisitLogs ({setSelection}) {
+function VisitLogs ({setSelection, visitTypes}) {
   const [user,] = useContext(UserContext)
   const [timeframe, setTimeframe] = useState("1 month")
   const [visitList, setVisitList] = useState(undefined) // Std Output client list from all search options
@@ -60,7 +60,8 @@ function VisitLogs ({setSelection}) {
       }
 
       {selectedVisit? 
-        <VisitPopup setSelectedVisit={setSelectedVisit} selectedVisit={selectedVisit} setUpdateCounter={setUpdateCounter}/>
+        <VisitPopup setSelectedVisit={setSelectedVisit} selectedVisit={selectedVisit} setUpdateCounter={setUpdateCounter} 
+        visitTypes={visitTypes}/>
         : <div></div>
       }
     </div>
@@ -68,11 +69,10 @@ function VisitLogs ({setSelection}) {
   return <div>Loading Data</div>
 }
 
-function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter}) {
+function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTypes}) {
   const [updatedVisit, setUpdatedVisit] = useState(undefined)
 
   const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", maxWidth: "75vw", padding: "10px"}
-  const visitOptions = ["Sales Visit", "Merchandising", "Technical Visit"]
   const outcomeOptions = ["NA", "Client Not Available","Visit Successful", "Visit Unsuccessful"]
 
   const cancelSelect = () => {
@@ -114,7 +114,7 @@ function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter}) {
           <div className="bold overflow-ellipsis">{`${client_name} (${client_id})`}</div>
           <DateSelectionKey name={"checkin_date"} label={"Check-in"} value={updatedVisit.checkin_date} setFunct={updateData}/>
           <ValueSelectionDropKey name={"visit_type"} label={"Visit Type"} current={updatedVisit.visit_type} 
-          valueArray={visitOptions} selectFunc={updateData} />
+          valueArray={visitTypes} selectFunc={updateData} />
           <ValueSelectionDropKey name={"outcome"} label={"Visit Outcome"} current={updatedVisit.outcome} 
           valueArray={outcomeOptions} selectFunc={updateData} />
           {/* <DateSelectionKey name={"checkout_date"} label={"Check-out"} value={updatedVisit.checkin_date} setFunct={updateData}/> */}

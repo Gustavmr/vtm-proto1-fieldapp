@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState } from "react"
 import CheckIn from "./CheckIn"
 import CheckOut from "./Checkout"
@@ -5,11 +6,14 @@ import ClientMenu from "./ClientMenu"
 import ClientSelect from "./ClientSelect"
 import { UserContext } from "./context/userContext"
 import ScreenToggler from "./general/ScreenToggler"
+import { postRequest } from "./general/ServerRequests"
 import VisitLogs from "./VisitLogs"
 
 function UserLanding () {
   const [user, setUser] = useContext(UserContext)
   const [selection, setSelection] = useState({screen: "checkin", inputs: {}})
+  const [visitTypes, setVisitTypes] = useState(["NA"])
+  const [visitCounts, setVisitCounts] = useState(undefined)
 
   const layout = {height: "100%", maxHeight: "100%",width: "100%", display: "grid", gridTemplateRows: "auto minmax(0,1fr)", fontSize:"16pt"}
   const headerLayout = {padding: "10px", display: "grid", gridTemplateColumns: "1fr auto", zIndex: 2}
@@ -21,9 +25,18 @@ function UserLanding () {
   };
 
   useEffect(()=> {
-    console.log("landing")
+    postRequest("field/visits/types", {resourceId: user.resource_id})
+    .then((output)=> {
+      console.log(output)
+      setVisitTypes(output)
+    }).catch((err)=> console.log(err))
+    postRequest("field/visits/get_log_counts", {user})
+    .then((output)=> {
+      setVisitCounts(output)
+    }).catch((err)=> console.log(err))
+    
   },[])
-  if (user) return(
+  if (user && visitCounts) return(
     <div style={layout}>
       <div className="has-shadow" style={headerLayout}>
         <div className="large-title">VTM Field</div>
@@ -31,11 +44,11 @@ function UserLanding () {
       </div>
       <ScreenToggler screenNames={["checkin", "clientSelect", "clientMenu", "checkout", "visitLogs"]} selectedScreen={selection.screen} 
       className="full light" style={screenLayout}>
-        <CheckIn setSelection={setSelection}/>
-        <ClientSelect setSelection={setSelection} />
+        <CheckIn setSelection={setSelection} visitCounts={visitCounts}/>
+        <ClientSelect setSelection={setSelection} visitTypes={visitTypes}/>
         <ClientMenu selection={selection} setSelection={setSelection}/>
         <CheckOut selection={selection} setSelection={setSelection} />
-        <VisitLogs selection={selection} setSelection={setSelection} />
+        <VisitLogs selection={selection} setSelection={setSelection} visitTypes={visitTypes}/>
       </ScreenToggler>
     </div>
 

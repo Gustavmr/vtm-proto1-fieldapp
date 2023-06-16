@@ -8,7 +8,7 @@ import { SortingColumnArray } from "./general/sorters"
 import { formatValue } from "./general/supportFunctions"
 import Tabs from "./general/Tabs"
 
-function ClientSelect ({setSelection}) {
+function ClientSelect ({setSelection, visitTypes}) {
   const [user,] = useContext(UserContext)
   const [iniIndex, setIniIndex] = useState(undefined) // Initial screen (depending on location activated or not)
   const [clientList, setClientList] = useState([]) // Std Output client list from all search options
@@ -67,7 +67,8 @@ function ClientSelect ({setSelection}) {
       }
 
       {selectedClient? 
-        <ClientPopup setSelectedClient={setSelectedClient} selectedClient={selectedClient} setSelection={setSelection} geolocation={geolocation}/>
+        <ClientPopup setSelectedClient={setSelectedClient} selectedClient={selectedClient} setSelection={setSelection} geolocation={geolocation}
+        visitTypes={visitTypes}/>
         : <div></div>
       }
     </div>
@@ -180,41 +181,31 @@ function FindByMap ({setClientList}) {
     </div>
   )
 }
-function ClientPopup ({setSelectedClient, selectedClient, setSelection, geolocation}) {
+function ClientPopup ({setSelectedClient, selectedClient, setSelection, geolocation, visitTypes}) {
   const [visitType, setVisitType] = useState("Sales Visit")
 
   const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", maxWidth: "75vw", padding: "10px"}
-  const visitOptions = ["Sales Visit", "Merchandising", "Technical Visit"]
-
   const cancelSelect = () => {
     setSelectedClient(undefined)
   }
   const checkInClient = ()=> {
     setSelection({screen: "clientMenu", inputs: {client: selectedClient, visitType, checkinDate: new Date(), geolocation}})
   }
-  const {client_id, client_name, status, sales, region, address, channel, segment} = selectedClient || {}
+  const {client_id, client_name, region, address, channel, segment} = selectedClient || {}
   
   return (
     <OverlayPopUp title={"Confirm Check-in"} setStatus={cancelSelect}>
       <div style={layout}>
         <div className="box-section full shade small-text">
-          <div style={{display: "grid", gridTemplateColumns: "minmax(0, 1fr) 80px"}}>
-            <div>
-              <div className="bold overflow-ellipsis">{`${client_name} (${client_id})`}</div>
-              <div className="bold overflow-ellipsis">{channel} - {segment}</div>
-              <div className="bold overflow-ellipsis">{region}</div>
-              <div ariaRowspan={2} className="overflow-ellipsis" style={{fontSize: "10pt"}}>{address}</div>
-
-            </div>
-            <div className="box-section full dark text-color-inv">
-              <div style={{fontSize: "10pt"}}>{"Sales (TTM)"} </div>
-              <div className="subtitle text-color-inv">{formatValue(sales, "$auto")}</div>
-              <div style={{fontSize: "12pt"}}>{status}</div>
-            </div>
+          <div style={{display: "flex", flexDirection: "column", gap: "5px", width: "70vw"}}>
+            <div className="bold overflow-ellipsis">{`${client_name} (${client_id})`}</div>
+            <div className="bold overflow-ellipsis">{channel} - {segment}</div>
+            <div className="bold overflow-ellipsis">{region}</div>
+            <div style={{fontSize: "10pt"}}>{address}</div>
           </div>
         </div>
         <div className="bold mid-text">Select Visit Type</div>
-        <ValueSelectionDrop valueArray={visitOptions} selectFunc={setVisitType} />
+        <ValueSelectionDrop valueArray={visitTypes} selectFunc={setVisitType} />
         <button onClick={checkInClient}>Client Check-in</button>
         <button onClick={cancelSelect}>cancel</button>
       </div>
