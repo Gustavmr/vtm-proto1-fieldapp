@@ -1,6 +1,4 @@
-import Register from "./Register"
 import { useState } from "react"
-import AuthInProgress from "./AuthInProgress"
 import { postRequest } from "../general/ServerRequests"
 import { BasicInput, PasswordInput } from "../general/inputs"
 

@@ -58,7 +58,6 @@ function NewProspect ({setSelection, channelTypes}) {
   const saveNewProspect = () => {
     postRequest("field/prospect/save", {newProspect})
     .then((output)=> {
-      console.log({output})
       setSelection({screen: "checkin", inputs: {}})
     }).catch((err)=> console.log({err}))
   }
@@ -115,7 +114,6 @@ function ProspectLocation ({setNewProspect, newProspect}) {
           address: output.address.Match_addr,
           geometry : {type: "point",  coordinates: [output.location.x, output.location.y]}
         }
-        console.log({locationUpdate})
         setNewProspect((current)=> {
           let updated = duplicateObject(current)
           updated.location = locationUpdate
@@ -140,7 +138,6 @@ function ProspectLocation ({setNewProspect, newProspect}) {
     postRequest("client/geolocation/check", {
       clientId: undefined, stdInputs: {address: newProspect.location.address}
     }).then((output)=> {
-      console.log({output})
       setOptions(output.candidates.filter(({score})=> score >= 50))
     }).catch((err)=> console.log(err))
   }

@@ -35,7 +35,6 @@ function VisitLogs ({setSelection, visitTypes}) {
     postRequest("field/visits/get_logs", {timeframe, user})
     .then((output)=> {
       setVisitList(output)
-      // console.log(output)
     }).catch((err) => console.log(err))
   },[timeframe, updateCounter])
   if (user && visitList) return(
@@ -86,11 +85,8 @@ function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTy
     })
   }
   const applyChanges = () => {
-    console.log({applied:  updatedVisit.checkin_date})
-
     postRequest("field/visits/edit_log", {updatedVisit})
     .then((output)=>{
-      console.log(output)
       setSelectedVisit(undefined)
       setUpdateCounter((current)=> current+1)
     }).catch((err)=>(console.log(err)))
@@ -102,8 +98,6 @@ function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTy
 
     editDates.checkin_date = formatDate(editDates.checkin_date, "-")
     editDates.checkout_date = formatDate(editDates.checkout_date, "-")
-
-    console.log({initial: selectedVisit.checkin_date, updated: editDates.checkin_date})
 
     setUpdatedVisit(editDates)
   },[])
@@ -135,7 +129,6 @@ function formatDate(dateString) {
   const year = dateString.substring(0,4)
   let month = dateString.substring(5,7)
   let day = dateString.substring(8,10)
-  console.log({year, month, day})
 
   // return `${year}${divider}${month}${divider}${day}`
   return `${year}-${month}-${day}`

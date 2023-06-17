@@ -29,12 +29,11 @@ function UserLanding () {
   useEffect(()=> {
     postRequest("field/visits/types", {resourceId: user.resource_id})
     .then((output)=> {
-      console.log(output)
       setVisitTypes(output)
     }).catch((err)=> console.log(err))
     postRequest("field/visits/get_log_counts", {user})
     .then((output)=> {
-      setVisitCounts(output)
+      setVisitCounts(output || {})      
     }).catch((err)=> console.log(err))
     getRequest("field/channels", {user})
     .then((output)=> {

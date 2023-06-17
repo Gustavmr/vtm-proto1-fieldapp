@@ -11,7 +11,6 @@ function ClientMenu ({selection, setSelection}) {
   const [user,] = useContext(UserContext)
 
   const clientCheckout = () => {
-    console.log("checkout")
     setSelection((current)=> {
       let updated = duplicateObject(current)
       updated.screen = "checkout"
@@ -31,7 +30,6 @@ function ClientMenu ({selection, setSelection}) {
     postRequest("field/clients/get_info", {clientId: client.client_id, user})
     .then((output)=> {
       setSelection((current)=> {
-        console.log({output, current})
         let updated = duplicateObject(current)
         updated.inputs.client = output
         return updated

@@ -20,7 +20,6 @@ function CheckIn ({setSelection, visitCounts}) {
     // setSelection({screen: "clientSelect", inputs: {}})
   }
   const goToNewProspect = () => {
-    console.log("New Prospect")
     setSelection({screen: "newProspect", inputs: {}})
   }
 
@@ -30,15 +29,15 @@ function CheckIn ({setSelection, visitCounts}) {
       <div className="box" style={userBox}>
         <div className="title">{user.displayName}</div>
         <div style={{display: "flex", gap: "5px"}}>
-          <span className="text-bubble mid-text"> {visitCounts.visits_1m}</span>
+          <span className="text-bubble mid-text"> {visitCounts.visits_1m || 0}</span>
           <span className="small-text flex-center-all">Visits last month</span>
         </div>
         <div style={{display: "flex", gap: "5px"}}>
-          <span className="text-bubble mid-text"> {visitCounts.visits_3m}</span>
+          <span className="text-bubble mid-text"> {visitCounts.visits_3m || 0}</span>
           <span className="small-text flex-center-all">Visits in 3 months</span>
         </div>
         <div style={{display: "flex", gap: "5px"}}>
-          <span className="text-bubble mid-text"> {visitCounts.visits_12m}</span>
+          <span className="text-bubble mid-text"> {visitCounts.visits_12m || 0}</span>
           <span className="small-text flex-center-all">Visits in 12 months</span>
         </div>
         <button className={"full dark"} onClick={goToVisitLog}>

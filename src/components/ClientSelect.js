@@ -32,7 +32,6 @@ function ClientSelect ({setSelection, visitTypes}) {
   }
   useEffect(()=> {
     navigator.geolocation.getCurrentPosition((position)=> {
-      console.log({position, lat: position.coords.latitude, lng: position.coords.longitude})
       setGeolocation({lat: position.coords.latitude, lng: position.coords.longitude})
       setIniIndex(0)
     }, (error)=> {
@@ -102,11 +101,9 @@ function FindAroundMe ({setClientList, iniIndex}) {
       const lat =  position.coords.latitude
       const lng = position.coords.longitude
       const limitCoordinates = coordinationBoundaries (lat, lng, distance || defaultDistance)
-      // const limitCoordinates = coordinationBoundaries (25.674939,-100.309731, 2)
-      // console.log({limitCoordinates})
+
       postRequest("field/clients/search_location", {limitCoordinates})
       .then((output)=> {
-        console.log(output)
         setClientList(output)
       }).catch((err)=> console.log(err))
     }, (error)=> {
@@ -147,7 +144,6 @@ function FindByName ({setClientList}) {
   const getClients = () => {
     postRequest("field/clients/search_name", {clientName})
     .then((output)=> {
-      console.log(output)
       setClientList(output)
     }).catch((err)=> console.log(err))
   }
@@ -237,7 +233,6 @@ function NotFoundPopup ({setClientNotFound, setSelection, user, visitTypes, geol
       visitNotes: "Could not find client in app",
       
     }).then((output)=> {
-      console.log({output})
       setSelection({screen: "checkin", inputs: {}})
     }).catch((err)=> console.log({err}))
   }

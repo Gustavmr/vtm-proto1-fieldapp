@@ -10,7 +10,6 @@ function CheckOut ({selection, setSelection}) {
   const [visitNotes, setVisitNotes] = useState("")
 
   const [user,] = useContext(UserContext)
-  console.log({user})
 
   const layout = {
     display: "grid", gridTemplateRows: "auto 1fr auto auto auto auto 1fr", alignItems: "center", gap: "20px",
@@ -21,7 +20,6 @@ function CheckOut ({selection, setSelection}) {
   const checkoutOptions = ["NA", "Client Not Available","Visit Successful", "Visit Unsuccessful"]
 
   const backToClientMenu = () => {
-    console.log("checkout")
     setSelection((current)=> {
       let updated = duplicateObject(current)
       updated.screen = "clientMenu"
@@ -31,12 +29,10 @@ function CheckOut ({selection, setSelection}) {
   const clientCheckOut = () => {
     postRequest("field/clients/log_visit", {...selection.inputs, visitOutcome, checkoutDate: new Date(), user, visitNotes})
     .then((output)=> {
-      console.log({output})
       setSelection({screen: "checkin", inputs: {}})
     }).catch((err)=> console.log({err}))
   }
   const cancel = () => {
-    console.log("cancel")
     setSelection({screen: "checkin", inputs: {}})
   }
 
