@@ -5,7 +5,6 @@ import { BasicInput, NumberInput, ValueSelectionDrop } from "./general/inputs"
 import { OverlayPopUp } from "./general/PopUpMenus"
 import {  postRequest } from "./general/ServerRequests"
 import { SortingColumnArray } from "./general/sorters"
-import { formatValue } from "./general/supportFunctions"
 import Tabs from "./general/Tabs"
 
 function ClientSelect ({setSelection, visitTypes}) {
@@ -14,6 +13,7 @@ function ClientSelect ({setSelection, visitTypes}) {
   const [clientList, setClientList] = useState([]) // Std Output client list from all search options
   const [selectedClient, setSelectedClient] = useState(undefined)
   const [geolocation, setGeolocation] = useState(undefined)
+  const [clientNotFound, setClientNotFound] = useState(false)
 
   const layout = {
     display: "grid", gridTemplateRows: "auto auto auto minmax(0, 1fr) auto", gap: "20px",
@@ -55,7 +55,10 @@ function ClientSelect ({setSelection, visitTypes}) {
       </div>
       <SortingColumnArray nameFormatArray={tableHeaders} layout={listRowLayout} setFunction={setClientList} />
       {clientList.length === 0?
-        <div style={{textAlign: "center"}}>No Clients Found </div> :
+        <div style={{textAlign: "center"}}>
+          <div>No Clients Found </div>
+          <button className="full shade" onClick={()=> setClientNotFound(true)}>Check-in Not Found</button>
+        </div> :
         <div style={listLayout}>
           {clientList.map((client, index)=>
             <div key={index} style={listRowLayout} onClick={()=> setSelectedClient(client)} className="full shade">
@@ -68,6 +71,11 @@ function ClientSelect ({setSelection, visitTypes}) {
 
       {selectedClient? 
         <ClientPopup setSelectedClient={setSelectedClient} selectedClient={selectedClient} setSelection={setSelection} geolocation={geolocation}
+        visitTypes={visitTypes}/>
+        : <div></div>
+      }
+      {clientNotFound? 
+        <NotFoundPopup setClientNotFound={setClientNotFound} user={user} setSelection={setSelection} geolocation={geolocation}
         visitTypes={visitTypes}/>
         : <div></div>
       }
@@ -205,6 +213,40 @@ function ClientPopup ({setSelectedClient, selectedClient, setSelection, geolocat
           </div>
         </div>
         <div className="bold mid-text">Select Visit Type</div>
+        <ValueSelectionDrop valueArray={visitTypes} selectFunc={setVisitType} />
+        <button onClick={checkInClient}>Client Check-in</button>
+        <button onClick={cancelSelect}>cancel</button>
+      </div>
+    </OverlayPopUp>
+  )
+}
+function NotFoundPopup ({setClientNotFound, setSelection, user, visitTypes, geolocation}) {
+  const [visitType, setVisitType] = useState("Sales Visit")
+  const [clientName, setClientName] = useState("")
+
+  const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", maxWidth: "75vw", padding: "10px"}
+  const cancelSelect = () => {
+    setClientNotFound(false)
+  }
+  const checkInClient = () => {
+    postRequest("field/clients/log_visit", {
+      user, geolocation, visitType,
+      client: {client_id: "NA", client_name: clientName}, 
+      checkinDate: new Date(), checkoutDate: new Date(), 
+      visitOutcome: "Client not found", 
+      visitNotes: "Could not find client in app",
+      
+    }).then((output)=> {
+      console.log({output})
+      setSelection({screen: "checkin", inputs: {}})
+    }).catch((err)=> console.log({err}))
+  }
+  
+  return (
+    <OverlayPopUp title={"Client Not Found"} setStatus={cancelSelect}>
+      <div style={layout}>
+        <div>Log visit for a client that could not be found with this app</div>
+        <BasicInput label={"Client Name"} value={clientName} setFunc={setClientName}/>
         <ValueSelectionDrop valueArray={visitTypes} selectFunc={setVisitType} />
         <button onClick={checkInClient}>Client Check-in</button>
         <button onClick={cancelSelect}>cancel</button>

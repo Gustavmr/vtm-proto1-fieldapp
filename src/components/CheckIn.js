@@ -19,9 +19,9 @@ function CheckIn ({setSelection, visitCounts}) {
     setSelection({screen: "visitLogs", inputs: {}})
     // setSelection({screen: "clientSelect", inputs: {}})
   }
-  const goToNewClient = () => {
+  const goToNewProspect = () => {
     console.log("New Prospect")
-    // setSelection({screen: "clientSelect", inputs: {}})
+    setSelection({screen: "newProspect", inputs: {}})
   }
 
   if (user) return(
@@ -49,7 +49,7 @@ function CheckIn ({setSelection, visitCounts}) {
         <button className onClick={goToClientSelect}>
           Client Check-in
         </button>
-        <button onClick={goToNewClient}>
+        <button onClick={goToNewProspect}>
           New Prospect
         </button>
       </div>

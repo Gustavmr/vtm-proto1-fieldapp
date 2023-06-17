@@ -72,7 +72,7 @@ function VisitLogs ({setSelection, visitTypes}) {
 function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTypes}) {
   const [updatedVisit, setUpdatedVisit] = useState(undefined)
 
-  const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", maxWidth: "75vw", padding: "10px"}
+  const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", width: "75vw", padding: "10px"}
   const outcomeOptions = ["NA", "Client Not Available","Visit Successful", "Visit Unsuccessful"]
 
   const cancelSelect = () => {
@@ -110,7 +110,7 @@ function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTy
   if (updatedVisit) return (
     <OverlayPopUp title={"Confirm Check-in"} setStatus={cancelSelect}>
       <div style={layout}>
-        <div className="box-section full shade small-text">
+        <div className="box-section full shade small-text" style={{width: "calc(75vw - 10px"}}>
           <div className="bold overflow-ellipsis">{`${client_name} (${client_id})`}</div>
           <DateSelectionKey name={"checkin_date"} label={"Check-in"} value={updatedVisit.checkin_date} setFunct={updateData}/>
           <ValueSelectionDropKey name={"visit_type"} label={"Visit Type"} current={updatedVisit.visit_type} 

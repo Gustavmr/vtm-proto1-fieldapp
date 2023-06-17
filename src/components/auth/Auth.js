@@ -39,7 +39,7 @@ function Auth ({checkUser}) {
 
   return (
     <div style={contentLayout}>
-      <div>top test</div>
+      <div></div>
       <div style={formLayout}>
         <div> 
           <label htmlFor="email" className="mid-text bold">Email</label>
@@ -57,7 +57,7 @@ function Auth ({checkUser}) {
           : <div className="box small-text text-color-inv">_</div>
         }
       </div>
-      <div>bottom test webkit 2</div>
+      <div></div>
       {/* <div>
         not a user yet? <span className="auth" onClick={() => setCurrentTab("register")}>register here</span> to get started on your VTM journey
       </div> */}

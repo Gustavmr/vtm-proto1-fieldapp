@@ -3,7 +3,8 @@ import { formatValue } from "../general/supportFunctions";
 const styles = {
   standard: {display: "flex", flexDirection: "column", gap: "5px"},
   noLabel: {display: "flex", flexDirection: "column"},
-  inLine: {display: "flex", flexDirection: "row", gap: "3px"}
+  inLine: {display: "flex", flexDirection: "row", gap: "3px"},
+  inLineSmall: {display: "flex", flexDirection: "row", gap: "10px", fontSize: "12pt", fontWeight: "bold"}
 }
 const defaultClass = "text-bubble dark text-content"
 // Basic
@@ -88,15 +89,18 @@ function TextAreaInput ({name, label, value, setFunc, rows}) {
   return(  
     <div className={name} style={{display: "flex", flexDirection: "column", gap: "5px"}}>
       <label htmlFor={`input-${name}`}>{label}</label>
-      <textarea className={defaultClass} id={`input-${name}`} rows={textRows} placeholder="-" value={value} onChange={(e) => setFunc(e.target.value)}/>
+      <textarea className={defaultClass} id={`input-${name}`} rows={textRows} placeholder="-" value={value} 
+      onChange={(e) => setFunc(e.target.value)}/>
     </div>
   )
 }
-function TextAreaInputKey ({name, description, value, setFunc}) {
+function TextAreaInputKey ({name, description, value, setFunc, rows}) {
+  const textRows = rows || 3
   return(  
     <div className={name} style={{display: "flex", flexDirection: "column", gap: "5px"}}>
       <label htmlFor={`input-${name}`}>{description}</label>
-      <textarea className={defaultClass} id={`input-${name}`} placeholder="-" value={value} onChange={(e) => setFunc(name, e.target.value)}/>
+      <textarea className={defaultClass} id={`input-${name}`} rows={textRows} placeholder="-" value={value} 
+      onChange={(e) => setFunc(name, e.target.value)}/>
     </div>
   )
 }
