@@ -4,7 +4,7 @@ import { TextAreaInput, ValueSelectionDrop } from "./general/inputs"
 import { postRequest } from "./general/ServerRequests"
 import { duplicateObject } from "./general/supportFunctions"
 
-function CheckOut ({selection, setSelection}) {
+function CheckOut ({selection, setSelection, refresh}) {
   const {client} = selection.inputs
   const [visitOutcome, setVisitOutcome] = useState("NA")
   const [visitNotes, setVisitNotes] = useState("")
@@ -30,6 +30,7 @@ function CheckOut ({selection, setSelection}) {
     postRequest("field/clients/log_visit", {...selection.inputs, visitOutcome, checkoutDate: new Date(), user, visitNotes})
     .then((output)=> {
       setSelection({screen: "checkin", inputs: {}})
+      refresh()
     }).catch((err)=> console.log({err}))
   }
   const cancel = () => {

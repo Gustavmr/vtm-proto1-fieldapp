@@ -7,7 +7,7 @@ import { postRequest } from "./general/ServerRequests"
 import { SortingColumnArray } from "./general/sorters"
 import { duplicateObject } from "./general/supportFunctions"
 
-function VisitLogs ({setSelection, visitTypes}) {
+function VisitLogs ({setSelection, visitTypes, refresh}) {
   const [user,] = useContext(UserContext)
   const [timeframe, setTimeframe] = useState("1 month")
   const [visitList, setVisitList] = useState(undefined) // Std Output client list from all search options
@@ -60,7 +60,7 @@ function VisitLogs ({setSelection, visitTypes}) {
 
       {selectedVisit? 
         <VisitPopup setSelectedVisit={setSelectedVisit} selectedVisit={selectedVisit} setUpdateCounter={setUpdateCounter} 
-        visitTypes={visitTypes}/>
+        visitTypes={visitTypes} refresh={refresh}/>
         : <div></div>
       }
     </div>
@@ -68,7 +68,7 @@ function VisitLogs ({setSelection, visitTypes}) {
   return <div>Loading Data</div>
 }
 
-function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTypes}) {
+function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTypes, refresh}) {
   const [updatedVisit, setUpdatedVisit] = useState(undefined)
 
   const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", width: "75vw", padding: "10px"}
@@ -80,6 +80,7 @@ function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTy
   const updateData = (key, value) => {
     setUpdatedVisit((current)=> {
       let updated = duplicateObject(current)
+      if (key === "visit_type") updated.action_id = visitTypes.find(({action_name})=> action_name === value).action_id
       updated[key] = value
       return updated
     })
@@ -89,6 +90,7 @@ function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTy
     .then((output)=>{
       setSelectedVisit(undefined)
       setUpdateCounter((current)=> current+1)
+      refresh()
     }).catch((err)=>(console.log(err)))
   }
 
@@ -108,7 +110,7 @@ function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTy
           <div className="bold overflow-ellipsis">{`${client_name} (${client_id})`}</div>
           <DateSelectionKey name={"checkin_date"} label={"Check-in"} value={updatedVisit.checkin_date} setFunct={updateData}/>
           <ValueSelectionDropKey name={"visit_type"} label={"Visit Type"} current={updatedVisit.visit_type} 
-          valueArray={visitTypes} selectFunc={updateData} />
+          valueArray={visitTypes.map(({action_name})=> action_name)} selectFunc={updateData} />
           <ValueSelectionDropKey name={"outcome"} label={"Visit Outcome"} current={updatedVisit.outcome} 
           valueArray={outcomeOptions} selectFunc={updateData} />
           {/* <DateSelectionKey name={"checkout_date"} label={"Check-out"} value={updatedVisit.checkin_date} setFunct={updateData}/> */}

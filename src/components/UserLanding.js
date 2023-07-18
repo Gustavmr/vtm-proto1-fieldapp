@@ -16,6 +16,7 @@ function UserLanding () {
   const [channelTypes, setChannelTypes] = useState(["NA"])
   const [visitTypes, setVisitTypes] = useState(["NA"])
   const [visitCounts, setVisitCounts] = useState(undefined)
+  const [refresher, setRefresher] = useState(0)
 
   const layout = {height: "100%", maxHeight: "100%",width: "100%", display: "grid", gridTemplateRows: "auto minmax(0,1fr)", fontSize:"16pt"}
   const headerLayout = {padding: "10px", display: "grid", gridTemplateColumns: "1fr auto", zIndex: 2}
@@ -25,7 +26,14 @@ function UserLanding () {
     localStorage.removeItem('loginToken')
     setUser(undefined)
   };
+  const refresh = () => setRefresher((current)=> current + 1)
 
+  useEffect(()=> {
+    postRequest("field/visits/get_log_counts", {user})
+    .then((output)=> {
+      setVisitCounts(output || {})      
+    }).catch((err)=> console.log(err))
+  }, [refresher])
   useEffect(()=> {
     postRequest("field/visits/types", {resourceId: user.resource_id})
     .then((output)=> {
@@ -51,8 +59,8 @@ function UserLanding () {
         <CheckIn setSelection={setSelection} visitCounts={visitCounts}/>
         <ClientSelect setSelection={setSelection} visitTypes={visitTypes}/>
         <ClientMenu selection={selection} setSelection={setSelection}/>
-        <CheckOut selection={selection} setSelection={setSelection} />
-        <VisitLogs selection={selection} setSelection={setSelection} visitTypes={visitTypes}/>
+        <CheckOut selection={selection} setSelection={setSelection} refresh={refresh}/>
+        <VisitLogs selection={selection} setSelection={setSelection} visitTypes={visitTypes} refresh={refresh}/>
         <NewProspect selection={selection} setSelection={setSelection} channelTypes={channelTypes}/>
       </ScreenToggler>
     </div>

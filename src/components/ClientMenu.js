@@ -27,7 +27,8 @@ function ClientMenu ({selection, setSelection}) {
   }
 
   useEffect(()=> {
-    postRequest("field/clients/get_info", {clientId: client.client_id, user})
+    console.log(client)
+    postRequest("field/clients/get_info", {clientId: client.client_id, user, type: client.type})
     .then((output)=> {
       setSelection((current)=> {
         let updated = duplicateObject(current)
@@ -171,41 +172,64 @@ function ClientHistory ({client}) {
 
   )
 }
-// function ClientPopup ({setSelectedClient, selectedClient, setSelection}) {
-//   const [visitType, setVisitType] = useState("Sales Visit")
+function ClientPotential ({client}) {
+  const [selected, setSelected] = useState(undefined)
+  const [descending, setDescending] = useState(true)
+  const layout = {
+    display: "grid", gridTemplateRows: "auto minmax(0, 1fr) auto", gap: "5px", padding: "10px", 
+    boxSizing: "border-box", height: "100%", overflow: "auto"
+  }
+  const listLayout = {
+    display: "flex", flexDirection: "column", gap: "5px", height: "100%", overflow: "auto"
+  }
+  const itemLayout = {display: "grid", gridTemplateColumns: "minmax(0, 1fr) auto", gap: "10px"}
+  // const sortedArray = arraySorter(client.history, "date")
+  const popupLayout = {maxHeight: "70vh", width: "80vw", overflow: "auto"}
 
-//   const layout = {height: "50%", width: "70%"}
+  const toggleDescending = () => {
+    setDescending((current)=> !current)
+  }
+  const closePopup = () => setSelected(undefined)
 
-//   const visitOptions = ["Sales Visit", "Merchandising", "Technical Visit"]
+  return (
+    <div className="box" style={layout}>
+      <div>
+        <span className="small-text bold">Transaction & Visit History  </span>
+        <button className="small" onClick={toggleDescending}>{descending? "descending": "ascending"}</button>
+      </div>
+      <div style={listLayout}>
+        {arraySorter(client.history, "date", descending).map((item, index)=> 
+          <div className="box-section full light" key={index} style={itemLayout} onClick={()=>setSelected(item)}>
+            <div>
+              <div className="small-text text-color dark">{displayDate(item.date)}</div>
+              <div className="mid-text overflow-ellipsis">{item.type}</div>
+            </div>
+            <div className="bold flex-center-all">
+              <div >{item.type === "Sale"? formatValue(item.display, "$auto") : item.display}</div>
+            </div>
+          </div>
+        )}
+      </div>
+      {
+        !selected ? <div></div> 
+        : selected.type === "Sale" ?
+        <OverlayPopUp title={"Sale Details"} setStatus={closePopup}>
+          <div style={popupLayout}>
+            {selected.by_product.map((prod, index) => 
+              <div className="box-section full light" key={index} style={itemLayout}>
+                <div className="small-text ">{prod.product_name}</div>
+                <div className="flex-center-all bold">{formatValue(prod.sales, "$auto")}</div>
+              </div>
+            )}
+          </div>
+        </OverlayPopUp>
+        :<OverlayPopUp title={"Visit Notes"} setStatus={closePopup}>
+        </OverlayPopUp>
+      }
+    </div>
 
-//   const cancelSelect = () => {
-//     setSelectedClient(undefined)
-//   }
-//   const checkInClient = ()=> {
-//     setSelection({screen: "clientMenu", inputs: {client: selectedClient, visitType, date: new Date()}})
-//   }
-//   const {client_id, client_name, status, sales, region, address, channel, segment} = selectedClient || {}
-  
-//   return (
-//     <OverlayPopUp title={"Confirm Client Check-in"} setStatus={cancelSelect}>
-//       <div style={layout}>
-//         <div className="box-section full shade">
-//           <div>{`${client_name} (${client_id})`}</div>
-//           <div>Status: {status}</div>
-//           <div>{"Sales (last 12 months):"} {formatValue(sales, "$auto")}</div>
-//           <div>Segment: {channel} {segment}</div>
-//           <div>Region: {region}</div>
-//           <div>Address: {address}</div>
-//         </div>
-//         <ValueSelectionDrop label={"Visit Types"} valueArray={visitOptions} selectFunc={setVisitType} />
-//         <button onClick={checkInClient}>Client Check-in</button>
-//         <button onClick={cancelSelect}>cancel</button>
-//       </div>
-//     </OverlayPopUp>
-//   )
-// }
-
-
+  )
+}
 export default ClientMenu
 
 function displayDate(dateString) {

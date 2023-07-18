@@ -61,7 +61,7 @@ function ClientSelect ({setSelection, visitTypes}) {
         <div style={listLayout}>
           {clientList.map((client, index)=>
             <div key={index} style={listRowLayout} onClick={()=> setSelectedClient(client)} className="full shade">
-              <div style={{fontSize: "16pt"}}>{client.client_id}</div> 
+              <div className="overflow-ellipsis" style={{fontSize: "16pt"}}>{client.client_id}</div> 
               <div className="overflow-ellipsis" style={{fontSize: "16pt"}}>{client.client_name}</div> 
             </div>
           )}
@@ -186,9 +186,13 @@ function FindByMap ({setClientList}) {
   )
 }
 function ClientPopup ({setSelectedClient, selectedClient, setSelection, geolocation, visitTypes}) {
-  const [visitType, setVisitType] = useState("Sales Visit")
+  const [visitType, setVisitType] = useState(visitTypes[0])
 
   const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", maxWidth: "75vw", padding: "10px"}
+  const selectType = (type) => {
+    const selected = visitTypes.find(({action_name})=> action_name === type)
+    setVisitType(selected)
+  }
   const cancelSelect = () => {
     setSelectedClient(undefined)
   }
@@ -209,7 +213,7 @@ function ClientPopup ({setSelectedClient, selectedClient, setSelection, geolocat
           </div>
         </div>
         <div className="bold mid-text">Select Visit Type</div>
-        <ValueSelectionDrop valueArray={visitTypes} selectFunc={setVisitType} />
+        <ValueSelectionDrop valueArray={visitTypes.map(({action_name})=> action_name)} current={visitType.action_name} selectFunc={selectType} />
         <button onClick={checkInClient}>Client Check-in</button>
         <button onClick={cancelSelect}>cancel</button>
       </div>
@@ -217,17 +221,22 @@ function ClientPopup ({setSelectedClient, selectedClient, setSelection, geolocat
   )
 }
 function NotFoundPopup ({setClientNotFound, setSelection, user, visitTypes, geolocation}) {
-  const [visitType, setVisitType] = useState("Sales Visit")
+  const [visitType, setVisitType] = useState(visitTypes[0])
   const [clientName, setClientName] = useState("")
+
 
   const layout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", maxWidth: "75vw", padding: "10px"}
   const cancelSelect = () => {
     setClientNotFound(false)
   }
+  const selectType = (type) => {
+    const selected = visitTypes.find(({action_name})=> action_name === type)
+    setVisitType(selected)
+  }
   const checkInClient = () => {
     postRequest("field/clients/log_visit", {
       user, geolocation, visitType,
-      client: {client_id: "NA", client_name: clientName}, 
+      client: {client_id: "NA", client_name: clientName, client_type: "Current"}, 
       checkinDate: new Date(), checkoutDate: new Date(), 
       visitOutcome: "Client not found", 
       visitNotes: "Could not find client in app",
@@ -242,7 +251,7 @@ function NotFoundPopup ({setClientNotFound, setSelection, user, visitTypes, geol
       <div style={layout}>
         <div>Log visit for a client that could not be found with this app</div>
         <BasicInput label={"Client Name"} value={clientName} setFunc={setClientName}/>
-        <ValueSelectionDrop valueArray={visitTypes} selectFunc={setVisitType} />
+        <ValueSelectionDrop valueArray={visitTypes.map(({action_name})=> action_name)} current={visitType.action_name} selectFunc={selectType} />
         <button onClick={checkInClient}>Client Check-in</button>
         <button onClick={cancelSelect}>cancel</button>
       </div>

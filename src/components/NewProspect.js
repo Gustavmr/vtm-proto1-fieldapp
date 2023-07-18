@@ -15,6 +15,7 @@ function NewProspect ({setSelection, channelTypes}) {
   const blankProspect = {
     prospect_name: "",
     added_date: new Date (),
+    added_by: user._id,
     status: "no contact",
     sales_potential: 0,
     sales_difficulty: "Medium",
