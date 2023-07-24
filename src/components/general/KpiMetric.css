@@ -1,0 +1,36 @@
+.kpi-bar {
+    display: flex;
+    gap: 2px;
+    position: relative;
+    height: 100%
+}
+
+.kpi-labels {
+    font-size: var(--fnt-sml-text);
+    display: flex;
+    justify-content: space-between; 
+}
+
+.kpi-bar > .metric {
+    height: 75%;
+    margin: 3px;
+    position: absolute;
+    border-radius: 4px;
+    font-size: var(--fnt-sml-text);
+    color: white;
+    padding-left: 5px;
+    /* box-sizing: border-box; */
+}
+
+.kpi-bar > .bar-section {
+    background-color: var(--col-bg-strong);
+    height: 100%;
+}
+
+.kpi-bar > .first {
+    border-radius: 7px 0px 0px 7px;
+}
+
+.kpi-bar > .last {
+    border-radius: 0px 7px 7px 0px;
+}

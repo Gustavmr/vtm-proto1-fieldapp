@@ -19,8 +19,11 @@ function UserLanding () {
   const [refresher, setRefresher] = useState(0)
 
   const layout = {height: "100%", maxHeight: "100%",width: "100%", display: "grid", gridTemplateRows: "auto minmax(0,1fr)", fontSize:"16pt"}
-  const headerLayout = {padding: "10px", display: "grid", gridTemplateColumns: "1fr auto", zIndex: 2}
-  const screenLayout = {height: "100%", boxSizing: "border-box", }
+  const headerLayout = {padding: "10px", display: "grid", gridTemplateColumns: "1fr auto"}
+  const menuLayout = {display: "grid", gridTemplateColumns: "1fr 1fr 1fr", textAlign: "center", paddingBottom: "5px"}
+  const screenLayout = {height: "100%", boxSizing: "border-box"}
+
+  const checkinScreens = ["checkin", "clientSelect", "clientMenu", "checkout", "newProspect"]
 
   const logoutUser = () => {
     localStorage.removeItem('loginToken')
@@ -50,18 +53,34 @@ function UserLanding () {
   },[])
   if (user && visitCounts && channelTypes) return(
     <div style={layout}>
-      <div className="has-shadow" style={headerLayout}>
-        <div className="large-title">VTM Field</div>
-        <button onClick={logoutUser}>Log out</button>
+      <div className="has-shadow" style={{zIndex: 2}}>
+        <div style={headerLayout}>
+          <div className="label mid-text">VTM Field</div>
+          <div className="small label text-color coral" onClick={logoutUser}>Log out</div>
+        </div>
+        <div style={menuLayout}>
+          <div className={`small-text text-color ${checkinScreens.includes(selection.screen)? "blue bold": "" }`}
+          onClick={()=> setSelection({screen: "checkin", inputs: {}})} >
+            Check-in
+          </div>
+          <div className={`small-text text-color ${selection.screen === "visitLogs"? "blue bold": "" }`} 
+          onClick={()=> setSelection({screen: "visitLogs", inputs: {}})} >
+            Visitas
+          </div>
+          <div className={`small-text text-color ${selection.screen === "tareas"? "blue bold": "" }`}>Tareas</div>
+        </div>
       </div>
-      <ScreenToggler screenNames={["checkin", "clientSelect", "clientMenu", "checkout", "visitLogs", "newProspect"]} selectedScreen={selection.screen} 
-      className="full light" style={screenLayout}>
+      <ScreenToggler screenNames={["checkin", "clientSelect", "clientMenu", "checkout", "newProspect", "visitLogs"]} selectedScreen={selection.screen} 
+      className="full light" layout={screenLayout}>
+        {/* Checkin flows */}
         <CheckIn setSelection={setSelection} visitCounts={visitCounts}/>
         <ClientSelect setSelection={setSelection} visitTypes={visitTypes}/>
         <ClientMenu selection={selection} setSelection={setSelection}/>
         <CheckOut selection={selection} setSelection={setSelection} refresh={refresh}/>
-        <VisitLogs selection={selection} setSelection={setSelection} visitTypes={visitTypes} refresh={refresh}/>
         <NewProspect selection={selection} setSelection={setSelection} channelTypes={channelTypes}/>
+        {/* Logs menu */}
+        <VisitLogs selection={selection} setSelection={setSelection} visitTypes={visitTypes} refresh={refresh}/>
+        {/* TBD Tareas pendientes */}
       </ScreenToggler>
     </div>
 

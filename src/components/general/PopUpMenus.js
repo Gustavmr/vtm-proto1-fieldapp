@@ -36,8 +36,8 @@ function OverlayPopUp ({title, children, setStatus}) {
     <div className="overlay-container" onClick={()=>setStatus(false)}>
       <div className="box-section white has-shadow" onClick={(e) => e.stopPropagation()}>
         <div style={titleLayout}>
-          <div className="title">{title}</div>
-          <button className="small" onClick={()=>setStatus(false)}>close</button>
+          <div className="label">{title}</div>
+          <div className="clickable text-color coral" onClick={()=>setStatus(false)}>{'\u2716'}</div>
         </div>
         <div>{children}</div>
       </div>

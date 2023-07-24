@@ -37,7 +37,7 @@ function NewProspect ({setSelection, channelTypes}) {
 
   const layout = {
     display: "grid", gridTemplateRows: "auto auto minmax(0, 1fr) auto auto", alignItems: "center", gap: "10px",
-    height: "100%", width: "100%", padding: "20px", boxSizing: "border-box"
+    height: "100%", width: "100%", padding: "10px 20px", boxSizing: "border-box"
   }
   const formLayout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "10px", height: "100%"}
 
@@ -68,31 +68,31 @@ function NewProspect ({setSelection, channelTypes}) {
   if (user && newProspect) return(
     <div  style={layout}>
       <div style={{display:"grid", gridTemplateColumns: "1fr auto"}}>
-        <div className="title">{"Add New Prospect"}</div>
-        <button onClick={cancelNewProspect}>back</button>
+        <div className="subtitle">{"Nuevo Prospecto"}</div>
+        <button className="small full coral" onClick={cancelNewProspect}>atras</button>
       </div>
       <div style={formLayout}>
         <BasicInputKey name={"prospect_name"} value={newProspect.name} setFunc={updateProspect}
-        label={"Name"} labelStyle={"inLineSmall"}/>
+        label={"Nombre"} labelStyle={"inLineSmall"}/>
         <ValueSelectionDropKey name={"channel"} valueArray={channelTypes} current={newProspect.channel} selectFunc={updateProspect}
-        label={"Channel"} labelStyle={"inLineSmall"}/>
+        label={"Canal"} labelStyle={"inLineSmall"}/>
         <ValueSelectionDropKey name={"status"} valueArray={contactTypes} current={newProspect.status} selectFunc={updateProspect}
         label={"Status"} labelStyle={"inLineSmall"}/>
         <NumberInputKey name={"sales_potential"} value={newProspect.sales_potential} setFunc={updateProspect} 
-        label={"Potential Sales"} labelStyle={"inLineSmall"}/>
+        label={"Potencial ($)"} labelStyle={"inLineSmall"}/>
         <ValueSelectionDropKey name={"sales_difficulty"} valueArray={difficultyLevels} current={newProspect.sales_difficulty} selectFunc={updateProspect}
-        label={"Sales Difficulty"} labelStyle={"inLineSmall"} className={difficultyClassName(newProspect.sales_difficulty)}/>
+        label={"Dificultad de Venta"} labelStyle={"inLineSmall"} className={difficultyClassName(newProspect.sales_difficulty)}/>
       </div>
       <div className="box outline" style={{height: "100%"}}>
-        <Tabs titleArray={["Location", "Contact", "Notes"]} initialIndex={0} >
+        <Tabs titleArray={["Ubicación", "Contacto", "Notas"]} initialIndex={0} >
           <ProspectLocation setNewProspect={setNewProspect} newProspect={newProspect}/>
           <ProspectContact setNewProspect={setNewProspect} newProspect={newProspect} />
           <ProspectNotes setNewProspect={setNewProspect} newProspect={newProspect} updateProspect={updateProspect}/>
         </Tabs>
       </div>
       <div style={{display: "grid", gridTemplateColumns:"1fr auto", gap: "10px"}}>
-        <button  onClick={saveNewProspect}>Save Prospect</button>
-        <button  onClick={cancelNewProspect}>Cancel</button>
+        <button  onClick={saveNewProspect}>Guardar Prospecto</button>
+        <button  onClick={cancelNewProspect}>Cancelar</button>
       </div>
     </div>
   )
@@ -101,7 +101,7 @@ function NewProspect ({setSelection, channelTypes}) {
 function ProspectLocation ({setNewProspect, newProspect}) {
   const [findOptions, setFindOptions] = useState(false)
   const [options, setOptions] = useState([])
-  const layout = {display: "grid", gridTemplateRows: "auto auto auto", gap: "10px", padding: "10px", height: "100%", boxSizing: "border-box"}
+  const layout = {display: "flex", flexDirection: "Column", gap: "10px", padding: "10px", height: "100%", boxSizing: "border-box"}
 
   const getCurrentAddress = () => {
     navigator.geolocation.getCurrentPosition((position)=> {
@@ -161,7 +161,6 @@ function ProspectLocation ({setNewProspect, newProspect}) {
   return (
     <div className="box" style={{height: "100%", boxSizing: "border-box"}}>
       <div style={layout}>
-        <button className={"small"} onClick={getCurrentAddress}>Use Current Location</button>        
         {options.length > 0? 
           <div className="" style={{height: "100%", overflow: "auto", display: "flex", flexDirection: "column", gap: "5px"}}>
             {options.map((loc, index)=> 
@@ -174,12 +173,13 @@ function ProspectLocation ({setNewProspect, newProspect}) {
             <TextAreaInputKey name={"address"} value={newProspect.location.address} setFunc={updateProspectLocation} />
             {findOptions? 
               <button className={"small"} onClick={searchAddress} disabled={!findOptions} style={{width: "70px", fontSize: "11pt"}}>
-                Search Options
+                Opciones 
               </button>
             :<div></div>
             }
           </div>
         }
+        <button className={"small inv"} onClick={getCurrentAddress}>Usar Ubicación Actual</button>        
     </div>
   </div>
   )
@@ -199,13 +199,13 @@ function ProspectContact ({setNewProspect, newProspect}) {
     <div className="box">
       <div style={layout}>
         <BasicInputKey name={"first_name"} value={newProspect.contact.first_name} setFunc={updateProspectContact}
-        label={"First Name"} labelStyle={"inLineSmall"}/>        
+        label={"Nombre"} labelStyle={"inLineSmall"}/>        
         <BasicInputKey name={"last_name"} value={newProspect.contact.last_name} setFunc={updateProspectContact}
-        label={"Last Name"} labelStyle={"inLineSmall"}/>     
+        label={"Apellido"} labelStyle={"inLineSmall"}/>     
         <BasicInputKey name={"email"} value={newProspect.contact.email} setFunc={updateProspectContact}
         label={"E-mail"} labelStyle={"inLineSmall"}/>    
         <BasicInputKey name={"phone"} value={newProspect.contact.phone} setFunc={updateProspectContact}
-        label={"Phone"} labelStyle={"inLineSmall"}/>          
+        label={"Telefono"} labelStyle={"inLineSmall"}/>          
       </div>
   </div>
   )

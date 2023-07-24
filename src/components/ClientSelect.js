@@ -16,15 +16,15 @@ function ClientSelect ({setSelection, visitTypes}) {
   const [clientNotFound, setClientNotFound] = useState(false)
 
   const layout = {
-    display: "grid", gridTemplateRows: "auto auto auto minmax(0, 1fr) auto", gap: "20px",
-    height: "100%", padding: "10px", boxSizing: "border-box"
+    display: "grid", gridTemplateRows: "auto auto minmax(0, 1fr) auto", gap: "10px",
+    height: "100%",  padding: "10px 20px", boxSizing: "border-box"
   }
   const listLayout = {height: "100%", overflow: "auto", display: "flex", flexDirection: "column", gap: "5px"}
-  const listRowLayout = {display: "grid", gridTemplateColumns: "70px minmax(0,1fr)", gap: "10px", padding: "3px 10px"}
+  const listRowLayout = {display: "grid", gridTemplateColumns: "minmax(0,1fr) 80px", gap: "10px", padding: "3px 10px"}
 
   const tableHeaders = [
-    {name: "client_id", display: "ID", format: {textAlign: "center", fontWeight: "bold", fontSize: "16pt"}},
-    {name: "client_name", display: "Name", format: {textAlign: "left" , fontWeight: "bold", fontSize: "16pt"}},
+    {name: "client_name", display: "Nombre", format: {textAlign: "left" , fontWeight: "bold", fontSize: "14pt"}},
+    {name: "type", display: "Tipo", format: {textAlign: "center", fontWeight: "bold", fontSize: "14pt"}},
   ]
 
   const cancelCheckIn = () => {
@@ -42,27 +42,30 @@ function ClientSelect ({setSelection, visitTypes}) {
   if (user && (iniIndex || iniIndex === 0)) return(
     <div style={layout}>
       <div style={{display:"grid", gridTemplateColumns: "1fr auto"}}>
-        <div className="title overflow-ellipsis">Select Client</div>
-        <button onClick={cancelCheckIn}>cancel</button>
+        <div className="subtitle overflow-ellipsis">Selecciona un Cliente</div>
+        <button className="small full coral" onClick={cancelCheckIn}>cancelar</button>
       </div>
       <div className="box outline">
-        <Tabs titleArray={["Around Me", "By Name", "Map"]} initialIndex={iniIndex} >
+        <Tabs titleArray={["Cerca de Mi", "Por Nombre", "Mapa"]} initialIndex={iniIndex} >
           <FindAroundMe setClientList={setClientList} iniIndex={iniIndex}/>
           <FindByName setClientList={setClientList} />
           <FindByMap setClientList={setClientList} />
         </Tabs>
       </div>
-      <SortingColumnArray nameFormatArray={tableHeaders} layout={listRowLayout} setFunction={setClientList} />
-      {clientList.length === 0?
-        <div style={{textAlign: "center"}}>
-          <div>No Clients Found </div>
-          <button className="full shade" onClick={()=> setClientNotFound(true)}>Check-in Not Found</button>
+      
+      {!clientList || clientList.length === 0?
+        <div className="flex-center-all" style={{textAlign: "center"}}>
+          <div>
+            <div className="mid-text">Ningun cliente cumple los criterios de búsqueda </div>
+            <button className="full shade" onClick={()=> setClientNotFound(true)}>Check-in Cliente No Econtrado</button>
+          </div>
         </div> :
         <div style={listLayout}>
+          <SortingColumnArray nameFormatArray={tableHeaders} layout={listRowLayout} setFunction={setClientList} />
           {clientList.map((client, index)=>
             <div key={index} style={listRowLayout} onClick={()=> setSelectedClient(client)} className="full shade">
-              <div className="overflow-ellipsis" style={{fontSize: "16pt"}}>{client.client_id}</div> 
-              <div className="overflow-ellipsis" style={{fontSize: "16pt"}}>{client.client_name}</div> 
+              <div className="overflow-ellipsis" style={{fontSize: "12pt"}}>{client.client_name}</div> 
+              <div className="overflow-ellipsis" style={{fontSize: "12pt"}}>{client.type}</div> 
             </div>
           )}
         </div>
@@ -71,9 +74,7 @@ function ClientSelect ({setSelection, visitTypes}) {
       {selectedClient? 
         <ClientPopup setSelectedClient={setSelectedClient} selectedClient={selectedClient} setSelection={setSelection} geolocation={geolocation}
         visitTypes={visitTypes}/>
-        : <div></div>
-      }
-      {clientNotFound? 
+        : clientNotFound? 
         <NotFoundPopup setClientNotFound={setClientNotFound} user={user} setSelection={setSelection} geolocation={geolocation}
         visitTypes={visitTypes}/>
         : <div></div>
@@ -124,10 +125,10 @@ function FindAroundMe ({setClientList, iniIndex}) {
         <div style={layout}>
           <div></div>
           <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
-            <div className="subtitle">{"Search Distance (km)"}</div>
+            <div className="label">{"Distancia de Búsqueda (kms)"}</div>
             <NumberInput value={distance} setFunc={setDistance} />
           </div>
-          <button onClick={getClients}>Find Clients Around Me</button>
+          <button onClick={getClients}>Buscar Clientes</button>
         </div>
         :<div className="box-section full coral shade">
           Location tracking is disabled, please accept "location tracking" on popup
@@ -155,7 +156,7 @@ function FindByName ({setClientList}) {
     <div className="box" style={layout}>
       <div></div>
       <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
-        <div className="subtitle">{"Client Name"}</div>
+        <div className="label">{"Nombre de Cliente"}</div>
         <BasicInput value={clientName} setFunc={setClientName} />
       </div>
       <button onClick={getClients}>Search Clients</button>
@@ -167,9 +168,9 @@ function FindByMap ({setClientList}) {
 
   const layout = {display: "grid", gridTemplateRows: "auto auto auto", gap: "10px", padding: "10px"}
 
-  const getClients = () => {
-    console.log("get map clients")
-  }
+  // const getClients = () => {
+  //   console.log("get map clients")
+  // }
 
   useEffect(()=>{
     setClientList([])
@@ -178,10 +179,9 @@ function FindByMap ({setClientList}) {
     <div style={layout}>
       <div></div>
       <div style={{display: "flex", flexDirection: "column", gap: "10px"}}>
-        <div className="subtitle">{"Find By Map"}</div>
-        <div>WIP</div>
+        <div>No Disponible Actualmente</div>
       </div>
-      <button onClick={getClients}>Search Clients</button>
+      {/* <button onClick={getClients}>Search Clients</button> */}
     </div>
   )
 }
@@ -199,23 +199,23 @@ function ClientPopup ({setSelectedClient, selectedClient, setSelection, geolocat
   const checkInClient = ()=> {
     setSelection({screen: "clientMenu", inputs: {client: selectedClient, visitType, checkinDate: new Date(), geolocation}})
   }
-  const {client_id, client_name, region, address, channel, segment} = selectedClient || {}
+  const {client_id, client_name, region, address} = selectedClient || {}
   
   return (
-    <OverlayPopUp title={"Confirm Check-in"} setStatus={cancelSelect}>
+    <OverlayPopUp title={"Continuar con Check-in"} setStatus={cancelSelect}>
       <div style={layout}>
         <div className="box-section full shade small-text">
           <div style={{display: "flex", flexDirection: "column", gap: "5px", width: "70vw"}}>
             <div className="bold overflow-ellipsis">{`${client_name} (${client_id})`}</div>
-            <div className="bold overflow-ellipsis">{channel} - {segment}</div>
+            {/* <div className="bold overflow-ellipsis">{channel} - {segment}</div> */}
             <div className="bold overflow-ellipsis">{region}</div>
             <div style={{fontSize: "10pt"}}>{address}</div>
           </div>
         </div>
-        <div className="bold mid-text">Select Visit Type</div>
+        <div className="bold mid-text">Tipo de Visita</div>
         <ValueSelectionDrop valueArray={visitTypes.map(({action_name})=> action_name)} current={visitType.action_name} selectFunc={selectType} />
-        <button onClick={checkInClient}>Client Check-in</button>
-        <button onClick={cancelSelect}>cancel</button>
+        <button onClick={checkInClient}>Check-in</button>
+        <button className="full coral" onClick={cancelSelect}>cancelar</button>
       </div>
     </OverlayPopUp>
   )

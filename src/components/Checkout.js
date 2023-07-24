@@ -13,7 +13,7 @@ function CheckOut ({selection, setSelection, refresh}) {
 
   const layout = {
     display: "grid", gridTemplateRows: "auto 1fr auto auto auto auto 1fr", alignItems: "center", gap: "20px",
-    height: "100%", width: "100%", padding: "20px", boxSizing: "border-box"
+    height: "100%", width: "100%", padding: "10px 20px", boxSizing: "border-box"
   }
   const buttonLayout = {display: "grid", gridTemplateRows:"auto auto auto auto", gap: "20px"}
 
@@ -40,16 +40,16 @@ function CheckOut ({selection, setSelection, refresh}) {
   if (user && client) return(
     <div  style={layout}>
       <div style={{display:"grid", gridTemplateColumns: "1fr auto"}}>
-        <div className="title overflow-ellipsis">{client.client_name}</div>
-        <button onClick={backToClientMenu}>back</button>
+        <div className="subtitle overflow-ellipsis">{client.client_name}</div>
+        <button className="small full coral" onClick={backToClientMenu}>atras</button>
       </div>
       <div style={buttonLayout}>
-        <ValueSelectionDrop label={"Visit Outcome"} valueArray={checkoutOptions} current={visitOutcome} selectFunc={setVisitOutcome}/>
-        <TextAreaInput label={"Visit Notes:"} rows={3} setFunc={setVisitNotes} />
+        <ValueSelectionDrop label={"Resultado de Visita"} valueArray={checkoutOptions} current={visitOutcome} selectFunc={setVisitOutcome}/>
+        <TextAreaInput label={"Notas de Visita:"} rows={3} setFunc={setVisitNotes} />
         <button className="large" onClick={clientCheckOut}  disabled={!visitOutcome || visitOutcome === "NA"}>
-          Client Check-out
+          Check-out
         </button>
-        <button className="large" onClick={cancel}>Cancel</button>
+        <button className="large" onClick={cancel}>Cancelar</button>
       </div>
       <div></div>
     </div>

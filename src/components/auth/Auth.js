@@ -36,9 +36,12 @@ function Auth ({checkUser}) {
   };
 
   return (
-    <div style={contentLayout}>
+    <div className={"full light"} style={contentLayout} >
       <div></div>
       <div style={formLayout}>
+        <div className="title text-color dark flex-center-all" style={{textAlign: "center"}}>
+          VTM Reporte de Visitas
+        </div>
         <div> 
           <label htmlFor="email" className="mid-text bold">Email</label>
           <BasicInput value={email} setFunc={setEmail}/>
@@ -52,7 +55,7 @@ function Auth ({checkUser}) {
         <button onClick={loginUser}>Log in</button>
         {alert? 
           <div className="box-section full shade coral text-color small-text">{alert}</div> 
-          : <div className="box small-text text-color-inv">_</div>
+          : <div className="box full light small-text text-color">_</div>
         }
       </div>
       <div></div>

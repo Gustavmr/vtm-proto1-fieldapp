@@ -183,8 +183,35 @@ function sumObjectValues (valueObject) {
   const output = valueArray.reduce((acum, curr)=> acum + curr, 0)
   return output
 }
+const groupBySum = (objectArray, groupByVariableArray, valueSumVariableArray) => {
+  // Create unique combinations of groupby variables
+  const indexedArray = objectArray.map((row) => {
+    let groupValues = []
+    groupByVariableArray.forEach((filterKey)=> {
+      groupValues.push(row[filterKey] || "NA")
+      if (!row[filterKey]) row[filterKey] = "NA"
+    }) 
+
+    // groupByVariableArray.forEach((filterKey)=> Object.entries(row).find(([key, value])=> key === filterKey)[1]) 
+    const concatKey = groupValues.join("|")
+    return {...row, concatKey}
+  })
+  const uniqueIndexes = uniqueValues(indexedArray, "concatKey")
+  
+  // For each combined grouping variable, split it and sum value variables
+  let outputArray = uniqueIndexes.map((concatKey) => {
+    let outputElement = {}
+    concatKey.split("|").forEach((value, index)=> outputElement[groupByVariableArray[index]] = value)
+    const filteredValues = indexedArray.filter((item)=> concatKey === item.concatKey)
+    valueSumVariableArray.forEach((sumVariable)=> {
+      outputElement[sumVariable] = filteredValues.reduce((acum, cur)=> acum + (cur[sumVariable] || 0),0)
+    })
+    return outputElement
+  })
+  return outputArray
+}
 
 export {
   formatValue, duplicateObject, objectsEqual, flattenParams, uniqueValues, uniqueMultipeValues, mergeArrays, summarizeByKeys, 
-  matchAndReplace, arraySorter, sumObjectValues, sumObjectKeys
+  matchAndReplace, arraySorter, sumObjectValues, sumObjectKeys, groupBySum
 }

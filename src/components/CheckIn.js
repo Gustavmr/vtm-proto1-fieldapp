@@ -15,10 +15,6 @@ function CheckIn ({setSelection, visitCounts}) {
   const goToClientSelect = () => {
     setSelection({screen: "clientSelect", inputs: {}})
   }
-  const goToVisitLog = () => {
-    setSelection({screen: "visitLogs", inputs: {}})
-    // setSelection({screen: "clientSelect", inputs: {}})
-  }
   const goToNewProspect = () => {
     setSelection({screen: "newProspect", inputs: {}})
   }
@@ -40,16 +36,13 @@ function CheckIn ({setSelection, visitCounts}) {
           <span className="text-bubble mid-text"> {visitCounts.visits_12m || 0}</span>
           <span className="small-text flex-center-all">Visits in 12 months</span>
         </div>
-        <button className={"full dark"} onClick={goToVisitLog}>
-          Visit Log
-        </button>
       </div>
       <div style={buttonLayout}>
         <button className onClick={goToClientSelect}>
-          Client Check-in
+          Check-in Cliente Actual
         </button>
         <button onClick={goToNewProspect}>
-          New Prospect
+          Agregar Prospecto
         </button>
       </div>
     </div>
