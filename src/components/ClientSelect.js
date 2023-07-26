@@ -159,7 +159,7 @@ function FindByName ({setClientList}) {
         <div className="label">{"Nombre de Cliente"}</div>
         <BasicInput value={clientName} setFunc={setClientName} />
       </div>
-      <button onClick={getClients}>Search Clients</button>
+      <button onClick={getClients}>Buscar Clientes</button>
     </div>
   )
 }
@@ -247,13 +247,13 @@ function NotFoundPopup ({setClientNotFound, setSelection, user, visitTypes, geol
   }
   
   return (
-    <OverlayPopUp title={"Client Not Found"} setStatus={cancelSelect}>
+    <OverlayPopUp title={"Cliente no Econtrado"} setStatus={cancelSelect}>
       <div style={layout}>
-        <div>Log visit for a client that could not be found with this app</div>
-        <BasicInput label={"Client Name"} value={clientName} setFunc={setClientName}/>
+        <div className="small-text">Registra una visita para un cliente que no pudiste encontrar</div>
+        <BasicInput label={"Nombre de Cliente"} value={clientName} setFunc={setClientName}/>
         <ValueSelectionDrop valueArray={visitTypes.map(({action_name})=> action_name)} current={visitType.action_name} selectFunc={selectType} />
-        <button onClick={checkInClient}>Client Check-in</button>
-        <button onClick={cancelSelect}>cancel</button>
+        <button onClick={checkInClient}>Check-in</button>
+        <button className="full coral" onClick={cancelSelect}>cancelar</button>
       </div>
     </OverlayPopUp>
   )

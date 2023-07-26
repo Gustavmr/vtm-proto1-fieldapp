@@ -1,9 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState} from "react"
 import { UserContext } from "./context/userContext"
+import { GrowthCharts } from "./general/charts"
 import { ExpandableSection } from "./general/Expandables"
 import { GeolocationUpdate } from "./general/GeolocationUpdate"
-import { BasicInput, NumberInput, TextAreaInput } from "./general/inputs"
+import { NumberInput, TextAreaInput } from "./general/inputs"
 import { KpiMetric } from "./general/KpiMetric"
 import { OverlayPopUp } from "./general/PopUpMenus"
 import { postRequest } from "./general/ServerRequests"
@@ -37,6 +38,7 @@ function ClientMenu ({selection, setSelection}) {
       setSelection((current)=> {
         let updated = duplicateObject(current)
         updated.inputs.client = output
+        console.log(output)
         return updated
       })
     })
@@ -73,7 +75,7 @@ function ProfileSection ({client, user, setSelection}) {
   
   const layout = {
     display: "flex", flexDirection: "column", gap: "10px", 
-    padding: "5px", height: "100%", boxSizing: "border-box", overflow: "auto"
+    padding: "10px", height: "100%", boxSizing: "border-box", overflow: "auto"
   }  
 
   const applyUpdate = () => {
@@ -138,55 +140,40 @@ function ProfileSection ({client, user, setSelection}) {
 // SALES SECTION
 function SalesOverview ({client, user}) {
   const [editPotential, setEditPotential] = useState(false)
-  const salesGrowth = {
-    value: formatValue((client.sales || 0)/client.sales_py - 1, "+X.0%"), 
-    color: client.sales >= client.sales_py? "green" : "coral"
-  }
 
   const layout = {
-    display: "grid", gridTemplateRows: "auto auto minmax(0, 1fr)", gap: "10px", 
-    padding: "5px", height: "100%", boxSizing: "border-box", 
+    display: "flex", flexDirection: "Column", gap: "10px", 
+    padding: "10px", height: "100%", boxSizing: "border-box",  overflow: "auto"
   }
  
-
-  if (client) return (
-    <div className="box" style={{padding: "10px", height: "100%", boxSizing: "border-box", overflow:"auto"}}>
-      <div style={layout}>
-        <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px"}}>
-          <div >
-            <div className="mid-text bold">Ventas</div>
-            <div className={`box-section full shade `} style={{textAlign:"center"}}>
-              <div>{formatValue(client.sales, "$auto")}</div>
-            </div>
-          </div>
-          <div>
-            <div className="mid-text bold">Vs Año Anterior</div>
-            <div className={`box-section full shade ${salesGrowth.color}`} style={{textAlign:"center"}}>
-              <div className={`text-color ${salesGrowth.color} bold`} style={{display: "flex", gap:"5px", justifyContent:"center"}}>
-                {salesGrowth.value} 
-                {/* <label className={`text-color ${salesGrowth.color} bold small-text`}>
-                  {`(${formatValue(client.sales- client.sales_py, "$auto")})`}
-                </label> */}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div >
-          <div style={{display: "flex", gap: "10px"}}>
-            <div className="mid-text bold">Potencial Capturado</div>
-            <div className="text-color blue flex-center-all" onClick={()=> setEditPotential((current)=> !current)}>
-              {' \u270E'}
-            </div>
-          </div>
-          <div style={{display: "grid", gridTemplateColumns: "1fr auto", gap: "10px"}}>
-            <KpiMetric value={client.sales/client.potential} format={"X%"}/>
-            <div className="bold mid-text">{formatValue(client.potential, "$auto")}</div>
-          </div>
-          { editPotential  ? <UpdatePotential client={client} user={user} setEditPotential={setEditPotential}/> : <div></div>}
-        </div>
-        <ProductSales client={client}/>         
+  if (client && client.type === "Current") return (
+    <div className="box" style={layout}>
+      <div className="box full shade" style={{padding: "5px"}}>
+        <div className="mid-text bold">Ventas</div>
+        <GrowthCharts TtmInputs={client.ttm} />
       </div>
+      <div className="box full shade" style={{padding: "5px"}}>
+        <div style={{display: "flex", gap: "10px"}}>
+          <div className="mid-text bold">Potencial Capturado</div>
+          <div className="text-color blue flex-center-all" onClick={()=> setEditPotential((current)=> !current)}>
+            {' \u270E'}
+          </div>
+        </div>
+        <div style={{display: "grid", gridTemplateColumns: "1fr auto", gap: "10px"}}>
+          <KpiMetric value={client.sales/client.potential} format={"X%"}/>
+          <div className="bold mid-text">{formatValue(client.potential, "$auto")}</div>
+        </div>
+        { editPotential  ? <UpdatePotential client={client} user={user} setEditPotential={setEditPotential}/> : <div></div>}
+      </div>
+      <ProductSales client={client}/>     
+      <ProductPotential client={client} />    
     </div>
+  )
+  if (client && client.type === "Prospect") return (
+    <div className="box flex-center-all" style={{...layout, textAlign: "center"}}>
+      Nuevo Prospecto - No tiene Historial de Ventas
+    </div>
+
   )
 }
 function ProductSales ({client}) {
@@ -199,7 +186,7 @@ function ProductSales ({client}) {
 
   const layout = {display: "flex", flexDirection: "column"}
   const tableLayout = {display: "flex", flexDirection: "column", gap: "3px"}
-  const rowLayout = {display: "grid", gridTemplateColumns: "150px 1fr 1fr", padding: "3px"}
+  const rowLayout = {display: "grid", gridTemplateColumns: "130px 1fr 1fr", padding: "3px"}
   
   useEffect(()=> {
     console.log(client.sales_by_product)
@@ -278,16 +265,60 @@ function UpdatePotential ({client, user, setEditPotential}) {
     </div>
   )
 }
+function ProductPotential ({client}) {
+  const [displayTable, setDisplayTable] = useState(undefined)
+  const tableHeaders = [
+    {name: "item_name", display: "Producto", format: {textAlign: "left" , fontWeight: "bold", fontSize: "10pt"}},
+    {name: "current_sales", display: "Actuales", format: {textAlign: "center", fontWeight: "bold", fontSize: "10pt"}},
+    {name: "sales_potential", display: "Potencial", format: {textAlign: "center", fontWeight: "bold", fontSize: "10pt"}},
+  ]
 
+  const layout = {display: "flex", flexDirection: "column"}
+  const tableLayout = {display: "flex", flexDirection: "column", gap: "3px"}
+  const rowLayout = {display: "grid", gridTemplateColumns: "130px 1fr 1fr", padding: "3px"}
+  
+  useEffect(()=> {
+    let flatTable = duplicateObject(client.potential_by_product || [])
+    flatTable = flatTable.map(({product_attributes = {}, current_sales, sales_potential}) => {
+      const attributeArray = Object.entries(product_attributes).map(([key,value]) => value)
+      const item_name = attributeArray.join(" | ")
+      return {item_name, current_sales, sales_potential, percValue : formatValue(current_sales / sales_potential,"X%")}
+    })
+    setDisplayTable(flatTable)
+  },[client])
+  if (displayTable) return (
+    <ExpandableSection title={"Potencial por Producto"}>
+      <div style={layout}>
+        {/* <div className="mid-text bold">Ventas por Producto</div> */}
+        <SortingColumnArray nameFormatArray={tableHeaders} layout={rowLayout} setFunction={setDisplayTable} />
+        <div className={`box-section outline shade`} style={tableLayout}>
+          {displayTable.map(({item_name, current_sales, sales_potential}, index)=> 
+            <div key={index} style={rowLayout}>
+              <div className="small-text" style={{maxHeight: "35px", fontSize: "8pt", overflow: "hidden"}}>{item_name}</div>
+              <div className="small-text flex-center-all" style={{textAlign: "right"}}>
+                {formatValue( current_sales, "$auto")}
+              </div>
+              <div className="small-text flex-center-all" style={{textAlign: "right"}}>
+                {formatValue( sales_potential, "$auto")}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </ExpandableSection>
+  )
+}
 
 function ClientTasks ({client}) {
-  const layout = {display: "grid", gridTemplateRows: "auto auto auto", gap: "10px", padding: "10px"}
-
+  const layout = {
+    display: "flex", flexDirection: "column", gap: "10px", 
+    padding: "10px", height: "100%", boxSizing: "border-box", overflow: "auto"
+  }  
+  
   return (
-    <div className="box">
-      <div style={layout}>
-        <div style={{textAlign: "center"}}>No Tasks</div>
-        <div></div>
+    <div className="box" style={layout}>
+      <div className="flex-center-all" style={{height: "100%"}}>
+        <div style={{textAlign: "center"}}>Sin Tareas Pendientes</div>
       </div>
     </div>
   )
@@ -314,8 +345,8 @@ function ClientHistory ({client}) {
   return (
     <div className="box" style={layout}>
       <div>
-        <span className="small-text bold">Transaction & Visit History  </span>
-        <button className="small" onClick={toggleDescending}>{descending? "descending": "ascending"}</button>
+        <span className="small-text bold">Historial de Visitas y Ventas</span>
+        <button className="small" onClick={toggleDescending}>{descending? "descendiente": "ascendente"}</button>
       </div>
       <div style={listLayout}>
         {arraySorter(client.history, "date", descending).map((item, index)=> 

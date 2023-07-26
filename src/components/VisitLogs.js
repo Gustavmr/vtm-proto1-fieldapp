@@ -23,9 +23,9 @@ function VisitLogs ({setSelection, visitTypes, refresh}) {
 
   const timeframeOptions = ["1 month", "3 months", "6 months", "12 months"]
   const tableHeaders = [
-    {name: "checkin_date", display: "Date", format: {textAlign: "center", fontWeight: "bold", fontSize: "16pt"}},
-    {name: "visit_type", display: "Type", format: {textAlign: "center", fontWeight: "bold", fontSize: "16pt"}},
-    {name: "client_name", display: "Name", format: {textAlign: "left" , fontWeight: "bold", fontSize: "16pt"}},
+    {name: "checkin_date", display: "Fecha", format: {textAlign: "center", fontWeight: "bold", fontSize: "16pt"}},
+    {name: "visit_type", display: "Tipo", format: {textAlign: "center", fontWeight: "bold", fontSize: "16pt"}},
+    {name: "client_name", display: "Nombre", format: {textAlign: "left" , fontWeight: "bold", fontSize: "16pt"}},
   ]
 
   const cancelCheckIn = () => {
@@ -37,27 +37,31 @@ function VisitLogs ({setSelection, visitTypes, refresh}) {
       setVisitList(output)
     }).catch((err) => console.log(err))
   },[timeframe, updateCounter])
-  if (user && visitList) return(
+  if (user && visitList) return (
     <div style={layout}>
       <div style={{display:"grid", gridTemplateColumns: "1fr auto"}}>
-        <div className="title overflow-ellipsis">Select Client</div>
-        <button onClick={cancelCheckIn}>cancel</button>
+        <div className="subtitle overflow-ellipsis">Visitas Anteriores</div>
+        <button className="small full coral" onClick={cancelCheckIn}>cancel</button>
       </div> 
-      <ValueSelectionDrop valueArray={timeframeOptions} current={timeframe} selectFunc={setTimeframe} />
-      <SortingColumnArray nameFormatArray={tableHeaders} layout={listRowLayout} setFunction={setVisitList} />
-      {visitList.length === 0?
-        <div style={{textAlign: "center"}}>No Visits Found </div> :
-        <div style={listLayout}>
-          {visitList.map((visit, index)=>
-            <div key={index} style={listRowLayout} onClick={()=> setSelectedVisit(visit)} className="full shade">
-              <div style={{overflowWrap: "break-word", fontSize:"11pt"}}>{displayDate(visit.checkin_date)}</div>
-              <div className="small-text overflow-ellipsis">{visit.visit_type}</div> 
-              <div className="small-text overflow-ellipsis">{visit.client_name}</div> 
-            </div>
-          )}
-        </div>
-      }
-
+      <div>
+        <div className="mid-text bold">Tiempo</div>
+        <ValueSelectionDrop valueArray={timeframeOptions} current={timeframe} selectFunc={setTimeframe} />
+      </div>
+      <div>
+        <SortingColumnArray nameFormatArray={tableHeaders} layout={listRowLayout} setFunction={setVisitList} />
+        {visitList.length === 0?
+          <div style={{textAlign: "center"}}>Sin Visitas Anteriores</div> :
+          <div style={listLayout}>
+            {visitList.map((visit, index)=>
+              <div key={index} style={listRowLayout} onClick={()=> setSelectedVisit(visit)} className="full shade">
+                <div style={{overflowWrap: "break-word", fontSize:"11pt"}}>{displayDate(visit.checkin_date)}</div>
+                <div className="small-text overflow-ellipsis">{visit.visit_type}</div> 
+                <div className="small-text overflow-ellipsis">{visit.client_name}</div> 
+              </div>
+            )}
+          </div>
+        }
+      </div>
       {selectedVisit? 
         <VisitPopup setSelectedVisit={setSelectedVisit} selectedVisit={selectedVisit} setUpdateCounter={setUpdateCounter} 
         visitTypes={visitTypes} refresh={refresh}/>
@@ -104,21 +108,21 @@ function VisitPopup ({setSelectedVisit, selectedVisit, setUpdateCounter, visitTy
     setUpdatedVisit(editDates)
   },[])
   if (updatedVisit) return (
-    <OverlayPopUp title={"Confirm Check-in"} setStatus={cancelSelect}>
+    <OverlayPopUp title={"Editar a Visita"} setStatus={cancelSelect}>
       <div style={layout}>
         <div className="box-section full shade small-text" style={{width: "calc(75vw - 10px"}}>
           <div className="bold overflow-ellipsis">{`${client_name} (${client_id})`}</div>
-          <DateSelectionKey name={"checkin_date"} label={"Check-in"} value={updatedVisit.checkin_date} setFunct={updateData}/>
-          <ValueSelectionDropKey name={"visit_type"} label={"Visit Type"} current={updatedVisit.visit_type} 
+          <DateSelectionKey name={"checkin_date"} label={"Fecha"} value={updatedVisit.checkin_date} setFunct={updateData}/>
+          <ValueSelectionDropKey name={"visit_type"} label={"Tipo"} current={updatedVisit.visit_type} 
           valueArray={visitTypes.map(({action_name})=> action_name)} selectFunc={updateData} />
-          <ValueSelectionDropKey name={"outcome"} label={"Visit Outcome"} current={updatedVisit.outcome} 
+          <ValueSelectionDropKey name={"outcome"} label={"Resultado"} current={updatedVisit.outcome} 
           valueArray={outcomeOptions} selectFunc={updateData} />
           {/* <DateSelectionKey name={"checkout_date"} label={"Check-out"} value={updatedVisit.checkin_date} setFunct={updateData}/> */}
-          <div>Notes</div>
+          <div>Notas</div>
           <TextAreaInputKey name={"notes"} value={updatedVisit.notes} setFunc={updateData}/>
         </div>
-        <button onClick={applyChanges}>Client Check-in</button>
-        <button onClick={cancelSelect}>cancel</button>
+        <button onClick={applyChanges}>Guardar Cambios</button>
+        <button className="full coral" onClick={cancelSelect}>cancelar</button>
       </div>
     </OverlayPopUp>
   )
