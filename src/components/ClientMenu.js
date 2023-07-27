@@ -139,8 +139,6 @@ function ProfileSection ({client, user, setSelection}) {
 }
 // SALES SECTION
 function SalesOverview ({client, user}) {
-  const [editPotential, setEditPotential] = useState(false)
-
   const layout = {
     display: "flex", flexDirection: "Column", gap: "10px", 
     padding: "10px", height: "100%", boxSizing: "border-box",  overflow: "auto"
@@ -155,15 +153,12 @@ function SalesOverview ({client, user}) {
       <div className="box full shade" style={{padding: "5px"}}>
         <div style={{display: "flex", gap: "10px"}}>
           <div className="mid-text bold">Potencial Capturado</div>
-          <div className="text-color blue flex-center-all" onClick={()=> setEditPotential((current)=> !current)}>
-            {' \u270E'}
-          </div>
+          <div></div>
         </div>
         <div style={{display: "grid", gridTemplateColumns: "1fr auto", gap: "10px"}}>
           <KpiMetric value={client.sales/client.potential} format={"X%"}/>
           <div className="bold mid-text">{formatValue(client.potential, "$auto")}</div>
         </div>
-        { editPotential  ? <UpdatePotential client={client} user={user} setEditPotential={setEditPotential}/> : <div></div>}
       </div>
       <ProductSales client={client}/>     
       <ProductPotential client={client} />    
@@ -220,24 +215,96 @@ function ProductSales ({client}) {
     </ExpandableSection>
   )
 }
-function UpdatePotential ({client, user, setEditPotential}) {
-  const [newPotential, setNewPotential] = useState(duplicateObject(client.potential))
-  const [notes, setNotes] = useState("")
 
-  const contentLayout = {display: "flex", flexDirection: "column", gap:"10px"}
+function ProductPotential ({client}) {
+  const [displayTable, setDisplayTable] = useState(undefined)
+  const tableHeaders = [
+    {name: "item_name", display: "Producto", format: {textAlign: "left" , fontWeight: "bold", fontSize: "10pt"}},
+    {name: "current_sales", display: "Actuales", format: {textAlign: "center", fontWeight: "bold", fontSize: "10pt"}},
+    {name: "sales_potential", display: "Potencial", format: {textAlign: "center", fontWeight: "bold", fontSize: "10pt"}},
+  ]
+
+  const layout = {display: "flex", flexDirection: "column"}
+  const tableLayout = {display: "flex", flexDirection: "column", gap: "3px"}
+  const rowLayout = {display: "grid", gridTemplateColumns: "130px 1fr 1fr 18px", padding: "3px"}
+  
+  useEffect(()=> {
+    let flatTable = duplicateObject(client.potential_by_product || [])
+    flatTable = flatTable.map(({product_attributes = {}, current_sales, sales_potential}) => {
+      const {product_id, category_id, subcategory_id, ...other_attributes} = product_attributes
+      let attributeArray = Object.entries(other_attributes).map(([key,value]) => value)
+      // attributeArray = attributeArray.filter((atr)=> !["product_id", "category_id", "subcategory_id"].includes(atr)) 
+      const item_name = attributeArray.join(" | ")
+      return {product_attributes, item_name, current_sales, sales_potential, percValue : formatValue(current_sales / sales_potential,"X%")}
+    })
+    setDisplayTable(flatTable)
+  },[client])
+  if (displayTable) return (
+    <ExpandableSection title={"Potencial por Producto"}>
+      <div style={layout}>
+        {/* <div className="mid-text bold">Ventas por Producto</div> */}
+        <SortingColumnArray nameFormatArray={tableHeaders} layout={rowLayout} setFunction={setDisplayTable} />
+        <div className={`box-section outline shade`} style={tableLayout}>
+          {displayTable.map((prod, index)=> 
+            <PotentialProductRow key={index} prod={prod} client={client} />
+          )}
+        </div>
+      </div>
+    </ExpandableSection>
+  )
+}
+function PotentialProductRow ({prod, client}) {
+  const [editPotential, setEditPotential] = useState(false)
+
+  const closeEditPotential = () => setEditPotential(false)
+  const rowLayout = {display: "grid", gridTemplateColumns: "130px 1fr 1fr 18px", padding: "3px"}
+  const {item_name, current_sales, sales_potential} = prod
+
+  return (
+    <div>
+      <div style={rowLayout}>
+        <div className="small-text" style={{maxHeight: "35px", fontSize: "8pt", overflow: "hidden"}}>{item_name}</div>
+        <div className="small-text flex-center-all" style={{textAlign: "right"}}>
+          {formatValue( current_sales, "$auto")}
+        </div>
+        <div className="small-text flex-center-all" style={{textAlign: "right"}}>
+          {formatValue( sales_potential, "$auto")}
+        </div>
+        {/* <div className="text-color blue flex-center-all" onClick={()=> console.log({edit: product_attributes})}> */}
+        <div className="text-color blue flex-center-all" onClick={()=> setEditPotential((current)=> !current)}>
+          {'\u270E'}
+        </div>
+      </div>
+      { editPotential  ? 
+        <OverlayPopUp title={"Solicitar Ajuste de Potencial"} setStatus={closeEditPotential} layout={{width: "90%"}}>
+          <UpdatePotential client={client} product={prod} setEditPotential={setEditPotential}/>
+        </OverlayPopUp>
+        : <div></div>}
+    </div>
+  )
+}
+function UpdatePotential ({client, product, setEditPotential}) {
+  const [newPotential, setNewPotential] = useState(duplicateObject(product.sales_potential))
+  const [notes, setNotes] = useState("")
+  const [user,] = useContext(UserContext)
+
+
+  const contentLayout = {display: "flex", flexDirection: "column", gap:"10px", paddingTop: "10px"}
 
   const sendRequest = () => {
     const requestInfo = {
       date: new Date(),
       type: "updateRequest", // updateRequest, response,
-      sub_type: "total potential",
+      sub_type: "product potential",
       from_type: "field_user",
       from_id: user._id,
-      to_type: "vtm general",
-      to_id: "NA",
-      content: {client_id: client.client_id, potential: newPotential, notes},
+      from_name: user.email,
+      to_type: "vtm",
+      to_id: ["potential_manager"],
+      content: {client_id: client.client_id, product_attributes: product.product_attributes, sales_potential: newPotential, notes},
       response_status: "Not Reviewed",
     }
+    console.log({requestInfo})
     postRequest("field/new_request", {requestInfo}).then((output)=> {
       console.log(output)
       setEditPotential(false)
@@ -246,10 +313,20 @@ function UpdatePotential ({client, user, setEditPotential}) {
 
   return (
     
-    <div className={`box-section outline shade`} style={contentLayout}>
+    <div  style={contentLayout}>
       <div>
-        <div className="small-text bold">Nuevo Potencial</div>
-        <NumberInput value={newPotential} setFunc={setNewPotential} />
+        <div className="small-text bold">Tipo de Producto</div>
+        <div className="small-text">{product.item_name}</div>
+      </div>
+      <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5px"}}>
+        <div>
+          <div className="small-text bold">Actual</div>
+          <div className="small-text">{formatValue(product.sales_potential,"$auto")}</div>
+        </div>
+        <div>
+          <div className="small-text bold">Nuevo Potencial</div>
+          <NumberInput value={newPotential} setFunc={setNewPotential} />
+        </div>
       </div>
       <div>
         <div className="small-text bold">Razón de Ajuste</div>
@@ -263,49 +340,6 @@ function UpdatePotential ({client, user, setEditPotential}) {
         {/* <div>{formatValue(client.potential, "$auto")}</div> */}
         {/* <div className="text-color dark bold">{formatValue(client.sales/client.potential, "X.0%")}</div> */}
     </div>
-  )
-}
-function ProductPotential ({client}) {
-  const [displayTable, setDisplayTable] = useState(undefined)
-  const tableHeaders = [
-    {name: "item_name", display: "Producto", format: {textAlign: "left" , fontWeight: "bold", fontSize: "10pt"}},
-    {name: "current_sales", display: "Actuales", format: {textAlign: "center", fontWeight: "bold", fontSize: "10pt"}},
-    {name: "sales_potential", display: "Potencial", format: {textAlign: "center", fontWeight: "bold", fontSize: "10pt"}},
-  ]
-
-  const layout = {display: "flex", flexDirection: "column"}
-  const tableLayout = {display: "flex", flexDirection: "column", gap: "3px"}
-  const rowLayout = {display: "grid", gridTemplateColumns: "130px 1fr 1fr", padding: "3px"}
-  
-  useEffect(()=> {
-    let flatTable = duplicateObject(client.potential_by_product || [])
-    flatTable = flatTable.map(({product_attributes = {}, current_sales, sales_potential}) => {
-      const attributeArray = Object.entries(product_attributes).map(([key,value]) => value)
-      const item_name = attributeArray.join(" | ")
-      return {item_name, current_sales, sales_potential, percValue : formatValue(current_sales / sales_potential,"X%")}
-    })
-    setDisplayTable(flatTable)
-  },[client])
-  if (displayTable) return (
-    <ExpandableSection title={"Potencial por Producto"}>
-      <div style={layout}>
-        {/* <div className="mid-text bold">Ventas por Producto</div> */}
-        <SortingColumnArray nameFormatArray={tableHeaders} layout={rowLayout} setFunction={setDisplayTable} />
-        <div className={`box-section outline shade`} style={tableLayout}>
-          {displayTable.map(({item_name, current_sales, sales_potential}, index)=> 
-            <div key={index} style={rowLayout}>
-              <div className="small-text" style={{maxHeight: "35px", fontSize: "8pt", overflow: "hidden"}}>{item_name}</div>
-              <div className="small-text flex-center-all" style={{textAlign: "right"}}>
-                {formatValue( current_sales, "$auto")}
-              </div>
-              <div className="small-text flex-center-all" style={{textAlign: "right"}}>
-                {formatValue( sales_potential, "$auto")}
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </ExpandableSection>
   )
 }
 

@@ -30,11 +30,11 @@ function SideMenuPopUp ({title, children, setStatus}) {
   )
 }
 
-function OverlayPopUp ({title, children, setStatus}) {
+function OverlayPopUp ({title, children, setStatus, layout={}}) {
   const titleLayout = {display: "grid", gridTemplateColumns: "1fr auto"}
   return (
     <div className="overlay-container" onClick={()=>setStatus(false)}>
-      <div className="box-section white has-shadow" onClick={(e) => e.stopPropagation()}>
+      <div className="box-section white has-shadow" onClick={(e) => e.stopPropagation()} style={layout}>
         <div style={titleLayout}>
           <div className="label">{title}</div>
           <div className="clickable text-color coral" onClick={()=>setStatus(false)}>{'\u2716'}</div>
