@@ -4,10 +4,10 @@ import { UserContext } from "./context/userContext"
 import { GrowthCharts } from "./general/charts"
 import { ExpandableSection } from "./general/Expandables"
 import { GeolocationUpdate } from "./general/GeolocationUpdate"
-import { NumberInput, TextAreaInput } from "./general/inputs"
+import { NumberInput, TextAreaInput, ValueSelectionDrop } from "./general/inputs"
 import { KpiMetric } from "./general/KpiMetric"
 import { OverlayPopUp } from "./general/PopUpMenus"
-import { postRequest } from "./general/ServerRequests"
+import { getRequest, postRequest } from "./general/ServerRequests"
 import { SortingColumnArray } from "./general/sorters"
 import { arraySorter, duplicateObject, formatValue, groupBySum } from "./general/supportFunctions"
 import Tabs from "./general/Tabs"
@@ -218,6 +218,7 @@ function ProductSales ({client}) {
 
 function ProductPotential ({client}) {
   const [displayTable, setDisplayTable] = useState(undefined)
+  const [addProduct, setAddProduct] = useState(false)
   const tableHeaders = [
     {name: "item_name", display: "Producto", format: {textAlign: "left" , fontWeight: "bold", fontSize: "10pt"}},
     {name: "current_sales", display: "Actuales", format: {textAlign: "center", fontWeight: "bold", fontSize: "10pt"}},
@@ -230,13 +231,6 @@ function ProductPotential ({client}) {
   
   useEffect(()=> {
     let flatTable = duplicateObject(client.potential_by_product || [])
-    flatTable = flatTable.map(({product_attributes = {}, current_sales, sales_potential}) => {
-      const {product_id, category_id, subcategory_id, ...other_attributes} = product_attributes
-      let attributeArray = Object.entries(other_attributes).map(([key,value]) => value)
-      // attributeArray = attributeArray.filter((atr)=> !["product_id", "category_id", "subcategory_id"].includes(atr)) 
-      const item_name = attributeArray.join(" | ")
-      return {product_attributes, item_name, current_sales, sales_potential, percValue : formatValue(current_sales / sales_potential,"X%")}
-    })
     setDisplayTable(flatTable)
   },[client])
   if (displayTable) return (
@@ -249,7 +243,14 @@ function ProductPotential ({client}) {
             <PotentialProductRow key={index} prod={prod} client={client} />
           )}
         </div>
+        <button onClick={()=> setAddProduct(true)}>Agregar Producto</button>
       </div>
+      {addProduct ? 
+        <OverlayPopUp title={"Agregar Producto"} setStatus={setAddProduct} layout={{width: "80%"}}>
+          <AddProductPopup client={client} currentPotentials={displayTable} setStatus={setAddProduct}/>
+        </OverlayPopUp>
+        :<div></div>
+      }
     </ExpandableSection>
   )
 }
@@ -258,12 +259,12 @@ function PotentialProductRow ({prod, client}) {
 
   const closeEditPotential = () => setEditPotential(false)
   const rowLayout = {display: "grid", gridTemplateColumns: "130px 1fr 1fr 18px", padding: "3px"}
-  const {item_name, current_sales, sales_potential} = prod
+  const {group_name, current_sales, sales_potential} = prod
 
   return (
     <div>
       <div style={rowLayout}>
-        <div className="small-text" style={{maxHeight: "35px", fontSize: "8pt", overflow: "hidden"}}>{item_name}</div>
+        <div className="small-text" style={{maxHeight: "35px", fontSize: "8pt", overflow: "hidden"}}>{group_name}</div>
         <div className="small-text flex-center-all" style={{textAlign: "right"}}>
           {formatValue( current_sales, "$auto")}
         </div>
@@ -295,13 +296,17 @@ function UpdatePotential ({client, product, setEditPotential}) {
     const requestInfo = {
       date: new Date(),
       type: "updateRequest", // updateRequest, response,
-      sub_type: "product potential",
+      sub_type: "updateProductPotential",
       from_type: "field_user",
       from_id: user._id,
       from_name: user.email,
       to_type: "vtm",
       to_id: ["potential_manager"],
-      content: {client_id: client.client_id, product_attributes: product.product_attributes, sales_potential: newPotential, notes},
+      content: {
+        client_id: client.client_id, 
+        group_key: product.group_key, group_name: product.group_name, 
+        sales_potential: newPotential, previous_potential: product.sales_potential, notes
+      },
       response_status: "Not Reviewed",
     }
     console.log({requestInfo})
@@ -316,7 +321,7 @@ function UpdatePotential ({client, product, setEditPotential}) {
     <div  style={contentLayout}>
       <div>
         <div className="small-text bold">Tipo de Producto</div>
-        <div className="small-text">{product.item_name}</div>
+        <div className="small-text">{product.group_name}</div>
       </div>
       <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "5px"}}>
         <div>
@@ -339,6 +344,64 @@ function UpdatePotential ({client, product, setEditPotential}) {
       
         {/* <div>{formatValue(client.potential, "$auto")}</div> */}
         {/* <div className="text-color dark bold">{formatValue(client.sales/client.potential, "X.0%")}</div> */}
+    </div>
+  )
+}
+function AddProductPopup ({client, currentPotentials, setStatus}) {
+  const [products, setProducts] = useState(undefined)
+  const [dropOptions, setDropOptions] = useState([])
+  const [selectedProduct, setSelectedProduct] = useState(undefined)
+  const [updateValue, setUpdateValue] = useState(0)
+  const [notes, setNotes] = useState("")
+  const [user,] = useContext(UserContext)
+
+  const layout = {display: "flex", flexDirection: "column", gap: "5px"}
+
+  const sendRequest = () => {
+    const productInfo = products.find(({group_name})=> selectedProduct === group_name)
+    const requestInfo = {
+      date: new Date(),
+      type: "updateRequest", // updateRequest, response,
+      sub_type: "addProductPotential",
+      from_type: "field_user",
+      from_id: user._id,
+      from_name: user.email,
+      to_type: "vtm",
+      to_id: ["potential_manager"],
+      content: {
+        client_id: client.client_id, 
+        group_key: productInfo.group_key, group_name: productInfo.group_name, 
+        sales_potential: updateValue, previous_potential: 0, notes
+      },
+      response_status: "Not Reviewed",
+    }
+    console.log({requestInfo})
+    postRequest("field/new_request", {requestInfo}).then((output)=> {
+      console.log(output)
+      setStatus(false)
+    }).catch((err)=> console.log(err))
+  } 
+
+  useEffect(()=>{
+    getRequest("data/potential/product_group_list").then((output)=> {
+      const currentKeys = currentPotentials.map(({group_key})=> group_key)
+      const filteredNames = output.filter(({group_key})=> !currentKeys.includes(group_key)).map(({group_name})=> group_name)
+      setProducts(output)
+      setDropOptions(filteredNames)
+      setSelectedProduct(filteredNames[0])
+    }).catch((err)=> console.log(err))
+  },[])
+  if (dropOptions && selectedProduct) return (
+    <div style={layout}>
+      <div>Product a agregar</div>
+      <ValueSelectionDrop value={selectedProduct} selectFunc={setSelectedProduct} valueArray={dropOptions}/>
+      <div>Adjust Potential</div>
+      <NumberInput value={updateValue} setFunc={setUpdateValue} />
+      <div>
+        <div className="small-text bold">Razón de Ajuste</div>
+        <TextAreaInput value={notes} setFunc={setNotes} />
+      </div>
+      <button onClick={sendRequest}>Enviar</button>
     </div>
   )
 }
