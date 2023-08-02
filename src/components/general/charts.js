@@ -65,6 +65,41 @@ function GrowthCharts ({TtmInputs, color = "green"}) {
   )
 
 }
+function ProgressCharts ({progressInputs, color = "green", metric = "sales"}) {
+  let {cy, py} = progressInputs
+  cy = cy || {}
+  py = py || {}
+
+  const layout = {display: "grid", gridTemplateColumns: "1fr", gap: "5px"}
+  const chartRowLayout = {display: "grid", gridTemplateRows: " auto auto 1fr auto", gap: "5px"}
+  const chartColumnLayout = {display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px"}
+
+  const refHeight = 80
+  const maxMetric = Math.max(cy[metric] || 0, py[metric] || 0)
+
+  return (
+    <div style={layout}>
+      <div style={chartRowLayout}>
+        {/* growth */}
+        <div className={`label text-color ${!py[metric] || !cy[metric]? "" : cy[metric] / py[metric] -1 >= 0 ? "green" : "coral"}`} 
+        style={{textAlign: "center"}}>
+          {formatValue(cy[metric] / py[metric] -1, "+X%")}
+        </div>      
+        {/* Bars */}
+        <div style={chartColumnLayout}>
+          <ChartBar baseHeight={refHeight} baseValue={maxMetric} currentValue={py[metric]} color={color}/>
+          <ChartBar baseHeight={refHeight} baseValue={maxMetric} currentValue={cy[metric]} color={color}/>
+        </div>
+        {/* labels */}
+        <div style={chartColumnLayout}>
+          <div className='label small'style={{textAlign: "center"}}>Año Anterior</div>
+          <div className='label small'style={{textAlign: "center"}}>Año Actual</div>
+        </div>
+      </div>
+    </div>
+  )
+
+}
 function TransactionHistoryChart ({calendarInputs, metric, color ="green"}) {
   const [timeUnits, setTimeUnits] = useState("year")
   const sortedArray = arraySorter(calendarInputs, "year", false)
@@ -118,4 +153,4 @@ function TransactionHistoryChart ({calendarInputs, metric, color ="green"}) {
 
 
 
-export {GrowthCharts, TransactionHistoryChart, ChartBar}
+export {GrowthCharts, TransactionHistoryChart, ProgressCharts, ChartBar}

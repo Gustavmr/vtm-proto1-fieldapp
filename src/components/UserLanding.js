@@ -63,19 +63,25 @@ function UserLanding () {
           onClick={()=> setSelection({screen: "checkin", inputs: {}})} >
             Check-in
           </div>
+          {/* <div className={`small-text text-color ${checkinScreens.includes(selection.screen)? "blue bold": "" }`}
+          onClick={()=> setSelection({screen: "clientView", inputs: {}})} >
+            Clientes
+          </div> */}
           <div className={`small-text text-color ${selection.screen === "visitLogs"? "blue bold": "" }`} 
           onClick={()=> setSelection({screen: "visitLogs", inputs: {}})} >
             Visitas
           </div>
-          <div className={`small-text text-color ${selection.screen === "tareas"? "blue bold": "" }`}>Tareas</div>
+          <div className={`small-text text-color ${selection.screen === "tareas"? "blue bold": "" }`}>
+            Tareas
+          </div>
         </div>
       </div>
       <ScreenToggler screenNames={["checkin", "clientSelect", "clientMenu", "checkout", "newProspect", "visitLogs"]} selectedScreen={selection.screen} 
       className="full light" layout={screenLayout}>
         {/* Checkin flows */}
         <CheckIn setSelection={setSelection} visitCounts={visitCounts}/>
-        <ClientSelect setSelection={setSelection} visitTypes={visitTypes}/>
-        <ClientMenu selection={selection} setSelection={setSelection}/>
+        <ClientSelect setSelection={setSelection} visitTypes={visitTypes} mode={"checkin"}/>
+        <ClientMenu selection={selection} setSelection={setSelection} mode={"checkin"}/>
         <CheckOut selection={selection} setSelection={setSelection} refresh={refresh}/>
         <NewProspect selection={selection} setSelection={setSelection} channelTypes={channelTypes}/>
         {/* Logs menu */}

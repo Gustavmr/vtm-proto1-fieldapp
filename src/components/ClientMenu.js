@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useContext, useEffect, useState} from "react"
 import { UserContext } from "./context/userContext"
-import { GrowthCharts } from "./general/charts"
+import { GrowthCharts, ProgressCharts } from "./general/charts"
 import { ExpandableSection } from "./general/Expandables"
 import { GeolocationUpdate } from "./general/GeolocationUpdate"
-import { NumberInput, TextAreaInput, ValueSelectionDrop } from "./general/inputs"
+import { NumberInput, NumberInputIndex, TextAreaInput, ValueSelectionDrop } from "./general/inputs"
 import { KpiMetric } from "./general/KpiMetric"
 import { OverlayPopUp } from "./general/PopUpMenus"
 import { getRequest, postRequest } from "./general/ServerRequests"
@@ -137,8 +137,9 @@ function ProfileSection ({client, user, setSelection}) {
     </div>
   )
 }
-// SALES SECTION
+//// SALES SECTION ////
 function SalesOverview ({client, user}) {
+  const [chartType, setChartType] = useState("Avance")
   const layout = {
     display: "flex", flexDirection: "Column", gap: "10px", 
     padding: "10px", height: "100%", boxSizing: "border-box",  overflow: "auto"
@@ -148,7 +149,20 @@ function SalesOverview ({client, user}) {
     <div className="box" style={layout}>
       <div className="box full shade" style={{padding: "5px"}}>
         <div className="mid-text bold">Ventas</div>
-        <GrowthCharts TtmInputs={client.ttm} />
+        <div style={{display: "grid", gridTemplateColumns: "1fr 1fr"}}>
+          <div className={`small-text text-color ${chartType === "Avance"? "green bold": "dark" }`} 
+          onClick={()=> setChartType("Avance")} style={{textAlign: "center"}}>
+            Avance
+          </div>
+          <div className={`small-text text-color ${chartType === "Tendencia"? "green bold": "dark" }`} 
+          onClick={()=> setChartType("Tendencia")} style={{textAlign: "center"}}>
+            Tendencia Anual
+          </div>        </div>
+        {chartType === "Avance"? 
+          <ProgressCharts progressInputs={client.progress} />
+          :<GrowthCharts TtmInputs={client.ttm} />
+        }
+        <ProductSales client={client}/>     
       </div>
       <div className="box full shade" style={{padding: "5px"}}>
         <div style={{display: "flex", gap: "10px"}}>
@@ -159,18 +173,15 @@ function SalesOverview ({client, user}) {
           <KpiMetric value={client.sales/client.potential} format={"X%"}/>
           <div className="bold mid-text">{formatValue(client.potential, "$auto")}</div>
         </div>
+        <ProductPotential client={client} />    
       </div>
-      <ProductSales client={client}/>     
-      <ProductPotential client={client} />    
     </div>
   )
   if (client && client.type === "Prospect") return (
-    <div className="box flex-center-all" style={{...layout, textAlign: "center"}}>
-      Nuevo Prospecto - No tiene Historial de Ventas
-    </div>
-
+    <ProspectPotentialEdit client={client}/>
   )
 }
+// Current
 function ProductSales ({client}) {
   const [displayTable, setDisplayTable] = useState(undefined)
   const tableHeaders = [
@@ -215,7 +226,6 @@ function ProductSales ({client}) {
     </ExpandableSection>
   )
 }
-
 function ProductPotential ({client}) {
   const [displayTable, setDisplayTable] = useState(undefined)
   const [addProduct, setAddProduct] = useState(false)
@@ -242,8 +252,9 @@ function ProductPotential ({client}) {
           {displayTable.map((prod, index)=> 
             <PotentialProductRow key={index} prod={prod} client={client} />
           )}
+          <button className="small inv blue" onClick={()=> setAddProduct(true)}>Agregar Producto</button>
         </div>
-        <button onClick={()=> setAddProduct(true)}>Agregar Producto</button>
+        
       </div>
       {addProduct ? 
         <OverlayPopUp title={"Agregar Producto"} setStatus={setAddProduct} layout={{width: "80%"}}>
@@ -405,6 +416,188 @@ function AddProductPopup ({client, currentPotentials, setStatus}) {
     </div>
   )
 }
+// Prospect
+function ProspectPotentialEdit ({client}) {
+  // Variables
+  const [totalPotential, setTotalPotential] = useState(duplicateObject(client.potential || 0))
+  const [productPotential, setProductPotential] = useState(duplicateObject(client.potential_by_product || []))
+  const [level, setLevel] = useState(duplicateObject(client.potential_by_product && client.potential_by_product.length > 0? "product" : "total"))
+  const [difficulty, setDifficulty] = useState(duplicateObject(client.sales_difficulty || "med"))
+  const [notes, setNotes] = useState(client.notes || "")
+  const [user,] = useContext(UserContext)
+  const difficultyLevels =["Low", "Medium", "High"]
+  // Formatting
+  const layout = {
+    display: "grid", gridTemplateRows: "minmax(0,1fr) auto", gap: "10px", 
+    padding: "10px", height: "100%", boxSizing: "border-box"
+  }
+  const mainLayout = {
+    display: "flex", flexDirection: "Column", gap: "10px", 
+    height: "100%", overflow: "auto"
+  }
+  // Functions 
+  const difficultyClassName = (difficulty) => {
+    const color = difficulty === "Low" ? "green" : difficulty === "Medium" ? "orange" : difficulty === "High" ? "coral" : ""
+    return `text-bubble full shade ${color} bold`
+  }
+
+  const sendRequest = () => {
+    const requestInfo = {
+      date: new Date(),
+      type: "updateRequest", // updateRequest, response,
+      sub_type: "updateProspectPotential",
+      from_type: "field_user",
+      from_id: user._id,
+      from_name: user.email,
+      to_type: "vtm",
+      to_id: ["potential_manager"],
+      content: {
+        prospect_id: client.client_id, 
+        sales_difficulty: difficulty, 
+        sales_potential: totalPotential, 
+        sales_potential_by_product: productPotential, 
+        notes
+      },
+      response_status: "Not Reviewed",
+    }
+    console.log({requestInfo})
+    postRequest("field/new_request", {requestInfo}).then((output)=> {
+      console.log(output)
+    }).catch((err)=> console.log(err))
+  } 
+
+  const reset = () => {
+    setTotalPotential(duplicateObject(client.potential || 0))
+    setProductPotential(duplicateObject(client.potential_by_product || []))
+    setDifficulty(duplicateObject(client.sales_difficulty || "med"))
+    setLevel(duplicateObject(client.potential_by_product && client.potential_by_product.length > 0? "product" : "total"))
+  }
+  return (
+    <div style={layout}>
+      <div className="box" style={mainLayout}>
+        <div className="mid-text label">Dificultad de Venta</div>
+        <ValueSelectionDrop name={"sales_difficulty"} valueArray={difficultyLevels} current={difficulty} selectFunc={setDifficulty}
+        className={difficultyClassName(difficulty)}/>
+        <div className="mid-text label">Potencial</div>
+        <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px"}}>
+          <div className={`small-text ${level === "total"? "text-color blue bold": "text-color dark"}`} 
+          onClick={()=>setLevel("total")} style={{textAlign: "center"}}>
+            Total
+          </div>
+          <div className={`small-text ${level === "product"? "text-color blue bold": "text-color dark"}`}  
+          onClick={()=>setLevel("product")} style={{textAlign: "center"}}>
+            Por Producto
+          </div>
+        </div>
+        {level === "product"? 
+          <ProductPotentialEditList client={client} productPotential={productPotential} setProductPotential={setProductPotential}
+          setTotalPotential={setTotalPotential}/>
+          :<NumberInput name={"sales_potential"} value={totalPotential} setFunc={setTotalPotential} 
+          labelStyle={"inLineSmall"} className={"text-bubble full blue shade text-right"}/>
+        }
+        <div>
+          <div className="small-text bold">Notas de Prospecto</div>
+          <TextAreaInput value={notes} setFunc={setNotes} />
+        </div>
+      </div>
+      <div style={{display:"grid", gridTemplateColumns: "auto 1fr", gap:"10px"}}>
+        <button className={"full coral"} onClick={reset}>reset</button>
+        <button className={""} onClick={sendRequest}>Enviar Ajustes</button>
+      </div>
+    </div>
+  )
+}
+function ProductPotentialEditList ({productPotential, setProductPotential, setTotalPotential}) {
+  const [addProduct, setAddProduct] = useState(false)
+
+  const tableHeaders = [
+    {name: "item_name", display: "Product", format: {textAlign: "left" , fontWeight: "bold", fontSize: "10pt"}},
+    {name: "sales_potential", display: "Potential", format: {textAlign: "center", fontWeight: "bold", fontSize: "10pt"}},
+  ]
+
+  const layout = {
+    display: "flex", flexDirection: "column", gap: "10px", boxSizing: "border-box"
+  }
+  const tableLayout = {display: "flex", flexDirection: "column", gap: "5px"}
+  const rowLayout = {display: "grid", gridTemplateColumns: "1fr 100px", gap: "5px"}
+
+  const updateProductPotential = (index, value) => {
+    setProductPotential((current)=> {
+      const updated = duplicateObject(current)
+      updated[index].sales_potential = value
+      const totalSum = updated.map(({sales_potential})=> sales_potential).reduce((acum, curr) => acum + curr ,0)
+      setTotalPotential(totalSum)
+      return updated
+    })
+  }
+
+  if (productPotential) return (
+    <div style={layout}>
+      <SortingColumnArray nameFormatArray={tableHeaders} layout={rowLayout} setFunction={setProductPotential} />
+      <div style={tableLayout}>
+        {productPotential.map((prod, index)=> 
+          <div style={rowLayout} key={index}>
+            <div className="small-text">{prod.group_name}</div>
+            <NumberInputIndex index={index} value={prod.sales_potential} setFunc={updateProductPotential} 
+            className={"text-bubble full blue shade text-right"}/>
+          </div>
+        )}
+      </div>
+      <button className="small inv blue" onClick={()=> setAddProduct(true)}>+ Agregar Product</button>
+      {addProduct? 
+        <OverlayPopUp title={"Agregar Producto a Potencial"} setStatus={setAddProduct}>
+          <AddProspectProductPopup productPotential={productPotential} setProductPotential={setProductPotential} 
+          setStatus={setAddProduct} />
+        </OverlayPopUp>
+        : <div></div>
+      }
+    </div>
+  )
+}
+function AddProspectProductPopup ({productPotential, setProductPotential, setStatus}) {
+  const [products, setProducts] = useState(undefined)
+  const [dropOptions, setDropOptions] = useState([])
+  const [selectedProduct, setSelectedProduct] = useState(undefined)
+  const [updateValue, setUpdateValue] = useState(0)
+
+  const layout = {display: "flex", flexDirection: "column", gap: "5px"}
+
+  const sendRequest = () => {
+    const productInfo = products.find(({group_name})=> selectedProduct === group_name)
+    const newProduct = {
+      group_key: productInfo.group_key, group_name: productInfo.group_name, 
+      sales_potential: updateValue, previous_potential: 0
+    }
+    console.log({selectedProduct, productInfo, newProduct})
+    setProductPotential((current)=> {
+      let updated = duplicateObject(current)
+      updated.push(newProduct)
+      return updated
+    })
+    setStatus(false)
+  } 
+
+  useEffect(()=>{
+    getRequest("data/potential/product_group_list").then((output)=> {
+      const currentKeys = productPotential.map(({group_key})=> group_key)
+      const filteredNames = output.filter(({group_key})=> !currentKeys.includes(group_key)).map(({group_name})=> group_name)
+      setProducts(output)
+      setDropOptions(filteredNames)
+      setSelectedProduct(filteredNames[0])
+    }).catch((err)=> console.log(err))
+  },[])
+  if (dropOptions && selectedProduct) return (
+    <div style={layout}>
+      <div>Product a agregar</div>
+      <ValueSelectionDrop current={selectedProduct} selectFunc={setSelectedProduct} valueArray={dropOptions}/>
+      <div>Adjust Potential</div>
+      <NumberInput value={updateValue} setFunc={setUpdateValue} />
+      <button onClick={sendRequest}>Agregar</button>
+    </div>
+  )
+}
+
+
 
 function ClientTasks ({client}) {
   const layout = {
