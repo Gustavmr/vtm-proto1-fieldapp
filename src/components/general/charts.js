@@ -20,7 +20,7 @@ function ChartBar ({baseHeight, baseValue, currentValue, valueFormat, color, dis
 // Specific Usecase Charts
 
 function GrowthCharts ({TtmInputs, color = "green"}) {
-  let {cy, py, ppy} = TtmInputs
+  let {cy, py, ppy} = TtmInputs || {}
   cy = cy || {}
   py = py || {}
   ppy = ppy || {}
@@ -66,7 +66,7 @@ function GrowthCharts ({TtmInputs, color = "green"}) {
 
 }
 function ProgressCharts ({progressInputs, color = "green", metric = "sales"}) {
-  let {cy, py} = progressInputs
+  let {cy, py} = progressInputs || {}
   cy = cy || {}
   py = py || {}
 

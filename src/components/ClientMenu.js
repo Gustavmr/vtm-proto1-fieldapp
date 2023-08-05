@@ -11,6 +11,7 @@ import { getRequest, postRequest } from "./general/ServerRequests"
 import { SortingColumnArray } from "./general/sorters"
 import { arraySorter, duplicateObject, formatValue, groupBySum } from "./general/supportFunctions"
 import Tabs from "./general/Tabs"
+import { StatusUpdate } from "./general/updateRequestFormats"
 
 function ClientMenu ({selection, setSelection}) {
   const {inputs: {client}} = selection
@@ -67,6 +68,7 @@ function ClientMenu ({selection, setSelection}) {
 
 function ProfileSection ({client, user, setSelection}) {
   const [editLocation, setEditLocation] = useState(undefined)
+  const [editStatus, setEditStatus] = useState(undefined) 
   const statusColor = (status) => {
     if (status === "inactive" || status === "dropoutRisk" || status === "declining") return "red text-color"
     if (status === "growing") return "green text-color"
@@ -96,24 +98,35 @@ function ProfileSection ({client, user, setSelection}) {
 
   return (
     <div style={layout}>
-      <div style={{display: "grid", gridTemplateColumns: "100px minmax(0, 1fr"}}>
+      {/* <div style={{display: "grid", gridTemplateColumns: "100px minmax(0, 1fr"}}>
         <div className="mid-text bold">Status</div>
         <div className={`box-section full shade ${statusColor(client.status)} `} style={{textAlign:"center"}}>
           <div>{client.status}</div>
         </div>
-      </div>
-      <div style={{display: "grid", gridTemplateColumns: "100px minmax(0, 1fr"}}>
-        <div className="mid-text bold">Segmento</div>
-        <div className={`box-section full shade ${statusColor(client.status)} `} style={{textAlign:"center"}}>
-          <div className="overflow-ellipsis">{client.channel} - {client.segment}</div>
+      </div> */}
+      <div style={{display:"flex", gap: "10px"}}>
+        <div className="mid-text bold">Status</div>
+        <div className="text-color blue flex-center-all" onClick={()=> setEditStatus(editStatus? undefined : client.status)}>
+          {'\u270E'}
         </div>
       </div>
-      <div style={{display: "grid", gridTemplateColumns: "100px minmax(0, 1fr"}}>
-        <div className="mid-text bold">Zona</div>
-        <div className={`box-section full shade `} style={{textAlign:"center"}}>
-          <div>{client.region}</div>
+      {editStatus ?
+        <StatusUpdate client={client} setStatus={setEditStatus}/>
+        :<div className={`box-section full shade ${statusColor(client.status)} `} style={{textAlign:"center"}}>
+          <div>{client.status}</div>
         </div>
+      }
+
+      <div className="mid-text bold">Segmento</div>
+      <div className={`box-section full shade ${statusColor(client.status)} `} style={{textAlign:"center"}}>
+        <div className="overflow-ellipsis">{client.channel} - {client.segment}</div>
       </div>
+
+      <div className="mid-text bold">Zona</div>
+      <div className={`box-section full shade `} style={{textAlign:"center"}}>
+        <div>{client.region}</div>
+      </div>
+      
       <div>
         <div style={{display:"flex", gap: "10px"}}>
           <div className="mid-text bold">Dirección</div>
@@ -152,7 +165,7 @@ function SalesOverview ({client, user}) {
         <div style={{display: "grid", gridTemplateColumns: "1fr 1fr"}}>
           <div className={`small-text text-color ${chartType === "Avance"? "green bold": "dark" }`} 
           onClick={()=> setChartType("Avance")} style={{textAlign: "center"}}>
-            Avance
+            Año Actual
           </div>
           <div className={`small-text text-color ${chartType === "Tendencia"? "green bold": "dark" }`} 
           onClick={()=> setChartType("Tendencia")} style={{textAlign: "center"}}>
@@ -329,7 +342,7 @@ function UpdatePotential ({client, product, setEditPotential}) {
 
   return (
     
-    <div  style={contentLayout}>
+    <div style={contentLayout}>
       <div>
         <div className="small-text bold">Tipo de Producto</div>
         <div className="small-text">{product.group_name}</div>
