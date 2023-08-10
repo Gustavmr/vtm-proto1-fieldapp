@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/vtm-proto1-fieldapp/static/css/main.3fbb51c0.css",
-    "main.js": "/vtm-proto1-fieldapp/static/js/main.ac630974.js",
+    "main.css": "/vtm-proto1-fieldapp/static/css/main.8eb64420.css",
+    "main.js": "/vtm-proto1-fieldapp/static/js/main.dc506a44.js",
     "static/js/787.f873f3c1.chunk.js": "/vtm-proto1-fieldapp/static/js/787.f873f3c1.chunk.js",
     "index.html": "/vtm-proto1-fieldapp/index.html",
-    "main.3fbb51c0.css.map": "/vtm-proto1-fieldapp/static/css/main.3fbb51c0.css.map",
-    "main.ac630974.js.map": "/vtm-proto1-fieldapp/static/js/main.ac630974.js.map",
+    "main.8eb64420.css.map": "/vtm-proto1-fieldapp/static/css/main.8eb64420.css.map",
+    "main.dc506a44.js.map": "/vtm-proto1-fieldapp/static/js/main.dc506a44.js.map",
     "787.f873f3c1.chunk.js.map": "/vtm-proto1-fieldapp/static/js/787.f873f3c1.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.3fbb51c0.css",
-    "static/js/main.ac630974.js"
+    "static/css/main.8eb64420.css",
+    "static/js/main.dc506a44.js"
   ]
 }
