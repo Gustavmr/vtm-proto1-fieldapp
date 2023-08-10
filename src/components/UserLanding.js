@@ -16,11 +16,12 @@ function UserLanding () {
   const [channelTypes, setChannelTypes] = useState(["NA"])
   const [visitTypes, setVisitTypes] = useState(["NA"])
   const [visitCounts, setVisitCounts] = useState(undefined)
+  const [viewMode, setViewMode] = useState(false)
   const [refresher, setRefresher] = useState(0)
 
   const layout = {height: "100%", maxHeight: "100%",width: "100%", display: "grid", gridTemplateRows: "auto minmax(0,1fr)", fontSize:"16pt"}
   const headerLayout = {padding: "10px", display: "grid", gridTemplateColumns: "1fr auto"}
-  const menuLayout = {display: "grid", gridTemplateColumns: "1fr 1fr 1fr", textAlign: "center", paddingBottom: "5px"}
+  const menuLayout = {display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", textAlign: "center", paddingBottom: "5px"}
   const screenLayout = {height: "100%", boxSizing: "border-box"}
 
   const checkinScreens = ["checkin", "clientSelect", "clientMenu", "checkout", "newProspect"]
@@ -59,14 +60,14 @@ function UserLanding () {
           <div className="small label text-color coral" onClick={logoutUser}>Log out</div>
         </div>
         <div style={menuLayout}>
-          <div className={`small-text text-color ${checkinScreens.includes(selection.screen)? "blue bold": "" }`}
-          onClick={()=> setSelection({screen: "checkin", inputs: {}})} >
+          <div className={`small-text text-color ${checkinScreens.includes(selection.screen) && !viewMode? "blue bold": "" }`}
+          onClick={()=> {setSelection({screen: "checkin", inputs: {}}); setViewMode(false)}} >
             Check-in
           </div>
-          {/* <div className={`small-text text-color ${checkinScreens.includes(selection.screen)? "blue bold": "" }`}
-          onClick={()=> setSelection({screen: "clientView", inputs: {}})} >
+          <div className={`small-text text-color ${checkinScreens.includes(selection.screen) && viewMode? "blue bold": "" }`}
+          onClick={()=> {setSelection({screen: "clientSelect", inputs: {}}); setViewMode(true)}} >
             Clientes
-          </div> */}
+          </div>
           <div className={`small-text text-color ${selection.screen === "visitLogs"? "blue bold": "" }`} 
           onClick={()=> setSelection({screen: "visitLogs", inputs: {}})} >
             Visitas
@@ -80,8 +81,8 @@ function UserLanding () {
       className="full light" layout={screenLayout}>
         {/* Checkin flows */}
         <CheckIn setSelection={setSelection} visitCounts={visitCounts}/>
-        <ClientSelect setSelection={setSelection} visitTypes={visitTypes} mode={"checkin"}/>
-        <ClientMenu selection={selection} setSelection={setSelection} mode={"checkin"}/>
+        <ClientSelect setSelection={setSelection} visitTypes={visitTypes} viewMode={viewMode}/>
+        <ClientMenu selection={selection} setSelection={setSelection} viewMode={viewMode}/>
         <CheckOut selection={selection} setSelection={setSelection} refresh={refresh}/>
         <NewProspect selection={selection} setSelection={setSelection} channelTypes={channelTypes}/>
         {/* Logs menu */}

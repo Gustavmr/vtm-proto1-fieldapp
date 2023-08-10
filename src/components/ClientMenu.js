@@ -13,7 +13,7 @@ import { arraySorter, duplicateObject, formatValue, groupBySum } from "./general
 import Tabs from "./general/Tabs"
 import { StatusUpdate } from "./general/updateRequestFormats"
 
-function ClientMenu ({selection, setSelection}) {
+function ClientMenu ({selection, setSelection, viewMode}) {
   const {inputs: {client}} = selection
   const [user,] = useContext(UserContext)
 
@@ -60,7 +60,10 @@ function ClientMenu ({selection, setSelection}) {
           <ClientHistory client={client} />
         </Tabs>
       </div>
-      <button onClick={clientCheckout}>CheckOut</button>
+      {viewMode? 
+        <div></div>
+        :<button onClick={clientCheckout}>CheckOut</button>
+      }
     </div>
   )
   return <div>Loading Data</div>
@@ -419,13 +422,14 @@ function AddProductPopup ({client, currentPotentials, setStatus}) {
     <div style={layout}>
       <div>Product a agregar</div>
       <ValueSelectionDrop value={selectedProduct} selectFunc={setSelectedProduct} valueArray={dropOptions}/>
-      <div>Adjust Potential</div>
+      <div>Ventas Potenciales</div>
       <NumberInput value={updateValue} setFunc={setUpdateValue} />
       <div>
         <div className="small-text bold">Razón de Ajuste</div>
         <TextAreaInput value={notes} setFunc={setNotes} />
       </div>
       <button onClick={sendRequest}>Enviar</button>
+      <button className={"full coral"} onClick={() => setStatus(false)}>Cancelar</button>
     </div>
   )
 }
@@ -603,9 +607,10 @@ function AddProspectProductPopup ({productPotential, setProductPotential, setSta
     <div style={layout}>
       <div>Product a agregar</div>
       <ValueSelectionDrop current={selectedProduct} selectFunc={setSelectedProduct} valueArray={dropOptions}/>
-      <div>Adjust Potential</div>
+      <div>Ventas Potenciales</div>
       <NumberInput value={updateValue} setFunc={setUpdateValue} />
       <button onClick={sendRequest}>Agregar</button>
+      <button className={"full coral"} onClick={() => setStatus(false)}>Cancelar</button>
     </div>
   )
 }

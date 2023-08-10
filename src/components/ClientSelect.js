@@ -7,7 +7,7 @@ import {  postRequest } from "./general/ServerRequests"
 import { SortingColumnArray } from "./general/sorters"
 import Tabs from "./general/Tabs"
 
-function ClientSelect ({setSelection, visitTypes}) {
+function ClientSelect ({setSelection, visitTypes, viewMode}) {
   const [user,] = useContext(UserContext)
   const [iniIndex, setIniIndex] = useState(undefined) // Initial screen (depending on location activated or not)
   const [clientList, setClientList] = useState([]) // Std Output client list from all search options
@@ -30,6 +30,11 @@ function ClientSelect ({setSelection, visitTypes}) {
   const cancelCheckIn = () => {
     setSelection({screen: "checkin", inputs:{}})
   }
+  const selectClient = (client) => {
+    if (viewMode) return setSelection({screen: "clientMenu", inputs: {client}})
+    setSelectedClient(client)
+  }
+
   useEffect(()=> {
     navigator.geolocation.getCurrentPosition((position)=> {
       setGeolocation({lat: position.coords.latitude, lng: position.coords.longitude})
@@ -57,13 +62,16 @@ function ClientSelect ({setSelection, visitTypes}) {
         <div className="flex-center-all" style={{textAlign: "center"}}>
           <div>
             <div className="mid-text">Ningun cliente cumple los criterios de búsqueda </div>
-            <button className="full shade" onClick={()=> setClientNotFound(true)}>Check-in Cliente No Econtrado</button>
+            {viewMode?
+              <div></div>
+              :<button className="full shade" onClick={()=> setClientNotFound(true)}>Check-in Cliente No Econtrado</button>
+            }
           </div>
         </div> :
         <div style={listLayout}>
           <SortingColumnArray nameFormatArray={tableHeaders} layout={listRowLayout} setFunction={setClientList} />
           {clientList.map((client, index)=>
-            <div key={index} style={listRowLayout} onClick={()=> setSelectedClient(client)} className="full shade">
+            <div key={index} style={listRowLayout} onClick={()=> selectClient(client)} className="full shade">
               <div className="overflow-ellipsis" style={{fontSize: "12pt"}}>{client.client_name}</div> 
               <div className="overflow-ellipsis" style={{fontSize: "12pt"}}>{client.type}</div> 
             </div>

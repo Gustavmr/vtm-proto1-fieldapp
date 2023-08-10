@@ -46,10 +46,10 @@ function CheckOut ({selection, setSelection, refresh}) {
       <div style={buttonLayout}>
         <ValueSelectionDrop label={"Resultado de Visita"} valueArray={checkoutOptions} current={visitOutcome} selectFunc={setVisitOutcome}/>
         <TextAreaInput label={"Notas de Visita:"} rows={3} setFunc={setVisitNotes} />
-        <button className="large" onClick={clientCheckOut}  disabled={!visitOutcome || visitOutcome === "NA"}>
+        <button onClick={clientCheckOut}  disabled={!visitOutcome || visitOutcome === "NA"}>
           Check-out
         </button>
-        <button className="large" onClick={cancel}>Cancelar</button>
+        <button className="full coral" onClick={cancel}>Cancelar</button>
       </div>
       <div></div>
     </div>

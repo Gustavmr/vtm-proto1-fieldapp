@@ -90,9 +90,9 @@ function NewProspect ({setSelection, channelTypes}) {
           <ProspectNotes setNewProspect={setNewProspect} newProspect={newProspect} updateProspect={updateProspect}/>
         </Tabs>
       </div>
-      <div style={{display: "grid", gridTemplateColumns:"1fr auto", gap: "10px"}}>
-        <button  onClick={saveNewProspect}>Guardar Prospecto</button>
-        <button  onClick={cancelNewProspect}>Cancelar</button>
+      <div style={{display: "grid", gridTemplateColumns:"auto 1fr", gap: "10px"}}>
+        <button className="full coral" onClick={cancelNewProspect}>Cancelar</button>
+        <button onClick={saveNewProspect}>Guardar Prospecto</button>
       </div>
     </div>
   )
