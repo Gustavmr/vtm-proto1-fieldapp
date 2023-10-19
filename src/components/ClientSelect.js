@@ -51,7 +51,7 @@ function ClientSelect ({setSelection, visitTypes, viewMode}) {
         <button className="small full coral" onClick={cancelCheckIn}>cancelar</button>
       </div>
       <div className="box outline">
-        <Tabs titleArray={["Cerca de Mi", "Por Nombre", "Mapa"]} initialIndex={iniIndex} >
+        <Tabs titleArray={["Cerca de Mi", "Por Nombre"]} initialIndex={iniIndex} >
           <FindAroundMe setClientList={setClientList} iniIndex={iniIndex}/>
           <FindByName setClientList={setClientList} />
           <FindByMap setClientList={setClientList} />

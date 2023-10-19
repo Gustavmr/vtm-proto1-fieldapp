@@ -21,7 +21,7 @@ function UserLanding () {
 
   const layout = {height: "100%", maxHeight: "100%",width: "100%", display: "grid", gridTemplateRows: "auto minmax(0,1fr)", fontSize:"16pt"}
   const headerLayout = {padding: "10px", display: "grid", gridTemplateColumns: "1fr auto"}
-  const menuLayout = {display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", textAlign: "center", paddingBottom: "5px"}
+  const menuLayout = {display: "grid", gridTemplateColumns: "1fr 1fr 1fr", textAlign: "center", paddingBottom: "5px"}
   const screenLayout = {height: "100%", boxSizing: "border-box"}
 
   const checkinScreens = ["checkin", "clientSelect", "clientMenu", "checkout", "newProspect"]
@@ -72,9 +72,9 @@ function UserLanding () {
           onClick={()=> setSelection({screen: "visitLogs", inputs: {}})} >
             Visitas
           </div>
-          <div className={`small-text text-color ${selection.screen === "tareas"? "blue bold": "" }`}>
+          {/* <div className={`small-text text-color ${selection.screen === "tareas"? "blue bold": "" }`}>
             Tareas
-          </div>
+          </div> */}
         </div>
       </div>
       <ScreenToggler screenNames={["checkin", "clientSelect", "clientMenu", "checkout", "newProspect", "visitLogs"]} selectedScreen={selection.screen} 

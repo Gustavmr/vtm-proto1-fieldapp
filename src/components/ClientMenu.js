@@ -53,11 +53,11 @@ function ClientMenu ({selection, setSelection, viewMode}) {
         </div>
       </div>
       <div className="box outline" style={{height: "100%"}}>
-        <Tabs titleArray={["Perfil","Ventas", "Pendientes", "Actividad"]} boxStyle={{height: "100%"}} >
+        <Tabs titleArray={["Perfil","Ventas", "Actividad"]} boxStyle={{height: "100%"}} >
           <ProfileSection client={client} setSelection={setSelection} user={user}/>
           <SalesOverview client={client} user={user} />
-          <ClientTasks client={client} />
           <ClientHistory client={client} />
+          <ClientTasks client={client} />
         </Tabs>
       </div>
       {viewMode? 
